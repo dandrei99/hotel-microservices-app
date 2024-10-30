@@ -32,4 +32,10 @@ public class UserController {
         UserDto savedUserDto = userService.saveUser(userDto);
         return new ResponseEntity<>(savedUserDto, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable("userId") Long userId){
+        UserDto userDto = userService.getUserById(userId);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
 }

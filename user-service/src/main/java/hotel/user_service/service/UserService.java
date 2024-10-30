@@ -4,4 +4,6 @@ import hotel.user_service.dto.UserDto;
 
 public interface UserService {
     UserDto saveUser(UserDto userDto);
+
+    UserDto getUserById(Long userId);
 }
