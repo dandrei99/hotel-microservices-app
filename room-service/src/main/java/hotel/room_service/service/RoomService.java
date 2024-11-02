@@ -8,4 +8,6 @@ public interface RoomService {
     RoomDto saveRoom(RoomDto roomDto);
 
     List<RoomDto> findAll();
+
+    RoomDto getRoomById(Long id);
 }

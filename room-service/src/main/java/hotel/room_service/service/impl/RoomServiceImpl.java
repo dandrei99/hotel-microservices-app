@@ -33,4 +33,11 @@ public class RoomServiceImpl implements RoomService {
        List<RoomDto> allRoomsDto = RoomMapper.mapToListRoomDto(allRooms);
        return allRoomsDto;
     }
+
+    @Override
+    public RoomDto getRoomById(Long id) {
+        Room room = roomRepository.getByRoomId(id);
+        RoomDto roomDto = RoomMapper.mapToRoomDto(room);
+        return roomDto;
+    }
 }
