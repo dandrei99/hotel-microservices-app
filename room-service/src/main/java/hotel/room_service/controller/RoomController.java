@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/rooms")
 public class RoomController {
@@ -18,5 +20,11 @@ public class RoomController {
     public ResponseEntity<RoomDto> saveRoom(@RequestBody RoomDto roomDto){
         RoomDto savedRoom = roomService.saveRoom(roomDto);
         return new ResponseEntity<>(savedRoom, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RoomDto>> getAllRoooms(){
+        List<RoomDto> allRooms = roomService.findAll();
+        return new ResponseEntity<>(allRooms, HttpStatus.OK);
     }
 }

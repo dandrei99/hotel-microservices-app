@@ -8,6 +8,8 @@ import hotel.room_service.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomServiceImpl implements RoomService {
 
@@ -23,5 +25,12 @@ public class RoomServiceImpl implements RoomService {
         RoomDto savedRoomDto = RoomMapper.mapToRoomDto(savedRoom);
 
         return null;
+    }
+
+    @Override
+    public List<RoomDto> findAll() {
+       List<Room> allRooms = roomRepository.findAll();
+       List<RoomDto> allRoomsDto = RoomMapper.mapToListRoomDto(allRooms);
+       return allRoomsDto;
     }
 }

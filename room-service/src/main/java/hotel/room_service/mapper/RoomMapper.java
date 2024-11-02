@@ -3,6 +3,10 @@ package hotel.room_service.mapper;
 import hotel.room_service.dto.RoomDto;
 import hotel.room_service.entity.Room;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class RoomMapper {
 
     public static RoomDto mapToRoomDto(Room room){
@@ -27,5 +31,10 @@ public class RoomMapper {
         room.setAvailability(roomDto.isAvailability());
         room.setSurface(roomDto.getSurface());
         return room;
+    }
+
+    public static List<RoomDto> mapToListRoomDto(List<Room> allRooms){
+        List<RoomDto> allRoomsDto = new ArrayList<>();
+        return allRooms.stream().map(Room -> mapToRoomDto(Room)).collect(Collectors.toList());
     }
 }
