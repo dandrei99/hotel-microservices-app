@@ -1,6 +1,6 @@
 package hotel.services_service.controller;
 
-import hotel.services_service.dto.HotelServicesDto;
+import hotel.services_service.dto.HotelServiceDto;
 import hotel.services_service.service.HotelServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class HotelServicesController {
     HotelServicesService hotelServicesService;
 
     @PostMapping
-    public ResponseEntity<HotelServicesDto> saveServices(@RequestBody HotelServicesDto hotelServicesDto){
-        HotelServicesDto savedHotelServicesDto = hotelServicesService.saveServices(hotelServicesDto);
-        return new ResponseEntity<>(savedHotelServicesDto, HttpStatus.CREATED);
+    public ResponseEntity<HotelServiceDto> saveServices(@RequestBody HotelServiceDto hotelServiceDto){
+        HotelServiceDto savedHotelServiceDto = hotelServicesService.saveServices(hotelServiceDto);
+        return new ResponseEntity<>(savedHotelServiceDto, HttpStatus.CREATED);
     }
 }

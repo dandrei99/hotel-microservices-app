@@ -1,8 +1,8 @@
 package hotel.services_service.service;
 
-import hotel.services_service.dto.HotelServicesDto;
+import hotel.services_service.dto.HotelServiceDto;
 
 public interface HotelServicesService {
 
-    HotelServicesDto saveServices(HotelServicesDto hotelServicesDto);
+    HotelServiceDto saveServices(HotelServiceDto hotelServiceDto);
 }
