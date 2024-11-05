@@ -21,4 +21,11 @@ public class HotelServicesServiceImpl implements HotelServicesService {
         HotelServiceDto savedHotelServiceDto = HotelServicesMapper.mapToServicesDto(savedHotelService);
         return savedHotelServiceDto;
     }
+
+    @Override
+    public HotelServiceDto getServiceById(Long serviceId) {
+        HotelService hotelService = hotelServicesRepository.findByServiceId(serviceId);
+        HotelServiceDto hotelServiceDto = HotelServicesMapper.mapToServicesDto(hotelService);
+        return hotelServiceDto;
+    }
 }

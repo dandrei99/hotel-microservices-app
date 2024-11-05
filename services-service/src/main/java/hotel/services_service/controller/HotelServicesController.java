@@ -5,10 +5,7 @@ import hotel.services_service.service.HotelServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/services")
@@ -18,8 +15,14 @@ public class HotelServicesController {
     HotelServicesService hotelServicesService;
 
     @PostMapping
-    public ResponseEntity<HotelServiceDto> saveServices(@RequestBody HotelServiceDto hotelServiceDto){
+    public ResponseEntity<HotelServiceDto> saveService(@RequestBody HotelServiceDto hotelServiceDto){
         HotelServiceDto savedHotelServiceDto = hotelServicesService.saveServices(hotelServiceDto);
         return new ResponseEntity<>(savedHotelServiceDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{serviceId}")
+    public ResponseEntity<HotelServiceDto> getService(@PathVariable("serviceId") Long serviceId){
+        HotelServiceDto hotelServiceDto = hotelServicesService.getServiceById(serviceId);
+        return new ResponseEntity<>(hotelServiceDto, HttpStatus.OK);
     }
 }
