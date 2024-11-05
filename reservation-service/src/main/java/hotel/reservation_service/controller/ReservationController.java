@@ -5,10 +5,7 @@ import hotel.reservation_service.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -21,5 +18,11 @@ public class ReservationController {
     public ResponseEntity<APIResponseDto> saveReservation(@RequestParam Long userId, @RequestParam Long roomId) {
         APIResponseDto apiResponseDto = reservationService.saveReservation(userId, roomId);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/addHotelService")
+    public ResponseEntity<APIResponseDto> addServiceToReservation(@RequestParam Long userId, @RequestParam Long serviceId){
+        APIResponseDto apiResponseDto = reservationService.addServiceToReservation(userId, serviceId);
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 }
