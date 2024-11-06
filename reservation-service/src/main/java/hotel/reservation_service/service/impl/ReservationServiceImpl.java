@@ -96,6 +96,39 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
+    @Override
+    public APIResponseDto getReservation(Long userId) {
+
+        //ReservationDto
+        Reservation reservation = reservationRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("No reservation found for this user"));
+        ReservationDto reservationDto = ReservationMapper.mapToReservationDto(reservation);
+
+        //RoomDto
+        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId());
+
+        //UserDto
+        UserDto userDto = getUserResponseApi(userId);
+
+        //HotelServiceDto
+        List<HotelServiceDto> userHotelServices = new ArrayList<>();
+        List<Long> reservationServices = reservation.getServiceIds();
+        for (int i = 0; i < reservationServices.size(); i++) {
+
+            HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i));
+            userHotelServices.add(serviceDto);
+        }
+
+        APIResponseDto apiResponseDto = new APIResponseDto();
+
+        apiResponseDto.setReservation(reservationDto);
+        apiResponseDto.setUser(userDto);
+        apiResponseDto.setRoom(roomDto);
+        apiResponseDto.setHotelServices(userHotelServices);
+
+        return apiResponseDto;
+    }
+
     private UserDto getUserResponseApi(Long userId) {
 
         UserDto userDto = webClient.get()

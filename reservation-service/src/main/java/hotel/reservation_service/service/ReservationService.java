@@ -7,4 +7,6 @@ public interface ReservationService {
     APIResponseDto saveReservation(Long userId, Long roomId);
 
     APIResponseDto addServiceToReservation(Long userId, Long serviceId);
+
+    APIResponseDto getReservation(Long userId);
 }

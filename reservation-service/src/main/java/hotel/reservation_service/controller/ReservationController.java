@@ -25,4 +25,10 @@ public class ReservationController {
         APIResponseDto apiResponseDto = reservationService.addServiceToReservation(userId, serviceId);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<APIResponseDto> getReservation(@PathVariable ("userId") Long userId){
+        APIResponseDto apiResponseDto = reservationService.getReservation(userId);
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
+    }
 }
