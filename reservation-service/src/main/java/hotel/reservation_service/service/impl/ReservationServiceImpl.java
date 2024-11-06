@@ -62,6 +62,9 @@ public class ReservationServiceImpl implements ReservationService {
 
         //add service
         List<Long> reservationServices = reservation.getServiceIds();
+        if(reservationServices.contains(serviceId)){
+            throw new IllegalArgumentException("Service with ID " + serviceId + " is already added to the reservation.");
+        }
         reservationServices.add(serviceId);
         reservation.setServiceIds(reservationServices);
 
