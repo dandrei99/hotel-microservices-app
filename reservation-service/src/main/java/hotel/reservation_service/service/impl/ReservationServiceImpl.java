@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +31,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public APIResponseDto saveReservation(Long userId, Long roomId) {
         log.info("Starting to create reservation for userId: {} and roomId: {}", userId, roomId);
+
+        // check user doesn't already have a reservation
+        Optional<Reservation> hasReservation = reservationRepository.findByUserId(userId);
+        if(hasReservation.isPresent()){
+            log.info("User with ID: {} already has a reservation", userId);
+            throw new RuntimeException("User already has a reservation");
+        }
 
         // Create and save a new Reservation
         Reservation reservation = new Reservation();
@@ -53,8 +61,8 @@ public class ReservationServiceImpl implements ReservationService {
         RoomDto roomDto = getRoomResponseApi(roomId);
         log.info("Fetched RoomDto: {}", roomDto);
 
+        //create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
-
         apiResponseDto.setUser(userDto);
         apiResponseDto.setRoom(roomDto);
         apiResponseDto.setReservation(reservationDto);
@@ -69,7 +77,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         Reservation reservation = reservationRepository.findByUserId(userId)
                 .orElseThrow(() -> {
-                    log.error("No reservation found for userId: {}", userId);
+                    log.info("No reservation found for userId: {}", userId);
                     return new RuntimeException("No reservation found for this user");
                 });
 
@@ -101,12 +109,11 @@ public class ReservationServiceImpl implements ReservationService {
         RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId());
         log.info("Fetched RoomDto: {}", roomDto);
 
+        //create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
-
         apiResponseDto.setReservation(reservationDto);
         apiResponseDto.setUser(userDto);
         apiResponseDto.setRoom(roomDto);
-
         apiResponseDto.setHotelServices(userHotelServices);
 
         log.info("Completed adding serviceId: {} to reservation for userId: {}", serviceId, userId);
@@ -121,7 +128,7 @@ public class ReservationServiceImpl implements ReservationService {
         //ReservationDto
         Reservation reservation = reservationRepository.findByUserId(userId)
                 .orElseThrow(() -> {
-                    log.error("No reservation found for userId: {}", userId);
+                    log.info("No reservation found for userId: {}", userId);
                     return new RuntimeException("No reservation found for this user");
                 });
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(reservation);
@@ -145,8 +152,8 @@ public class ReservationServiceImpl implements ReservationService {
             userHotelServices.add(serviceDto);
         }
 
+        //create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
-
         apiResponseDto.setReservation(reservationDto);
         apiResponseDto.setUser(userDto);
         apiResponseDto.setRoom(roomDto);
