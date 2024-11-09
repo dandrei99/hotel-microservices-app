@@ -6,6 +6,8 @@ import hotel.reservation_service.mapper.ReservationMapper;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.ReservationService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,6 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
+    private static final Logger log = LoggerFactory.getLogger(ReservationServiceImpl.class);
+
     @Autowired
     ReservationRepository reservationRepository;
 
@@ -25,6 +29,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public APIResponseDto saveReservation(Long userId, Long roomId) {
+        log.info("Starting to create reservation for userId: {} and roomId: {}", userId, roomId);
 
         // Create and save a new Reservation
         Reservation reservation = new Reservation();
@@ -41,9 +46,12 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDto.setRoomId(savedReservation.getRoomId());
         reservationDto.setReservationStatus(String.valueOf(savedReservation.getReservationStatus()));
         reservationDto.setCreatedAt(savedReservation.getCreatedAt());
+        log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
         UserDto userDto = getUserResponseApi(userId);
+        log.info("Fetched UserDto: {}", userDto);
         RoomDto roomDto = getRoomResponseApi(roomId);
+        log.info("Fetched RoomDto: {}", roomDto);
 
         APIResponseDto apiResponseDto = new APIResponseDto();
 
@@ -51,18 +59,24 @@ public class ReservationServiceImpl implements ReservationService {
         apiResponseDto.setRoom(roomDto);
         apiResponseDto.setReservation(reservationDto);
 
+        log.info("Completed reservation creation for userId: {} and roomId: {}", userId, roomId);
         return apiResponseDto;
     }
 
     @Override
     public APIResponseDto addServiceToReservation(Long userId, Long serviceId) {
+        log.info("Adding serviceId: {} to reservation for userId: {}", serviceId, userId);
 
         Reservation reservation = reservationRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("No reservation found for this user"));
+                .orElseThrow(() -> {
+                    log.error("No reservation found for userId: {}", userId);
+                    return new RuntimeException("No reservation found for this user");
+                });
 
         //add service
         List<Long> reservationServices = reservation.getServiceIds();
-        if(reservationServices.contains(serviceId)){
+        if (reservationServices.contains(serviceId)) {
+            log.info("Service with ID: {} is already added to the reservation for userId: {}", serviceId, userId);
             throw new IllegalArgumentException("Service with ID " + serviceId + " is already added to the reservation.");
         }
         reservationServices.add(serviceId);
@@ -72,6 +86,7 @@ public class ReservationServiceImpl implements ReservationService {
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
 
         UserDto userDto = getUserResponseApi(userId);
+        log.info("Fetched UserDto: {}", userDto);
 
         //set existing hotel services of the reservation to the APIResponseDto
         List<HotelServiceDto> userHotelServices = new ArrayList<>();
@@ -79,10 +94,12 @@ public class ReservationServiceImpl implements ReservationService {
         for (int i = 0; i < reservationServices.size(); i++) {
 
             HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i));
+            log.info("Fetched HotelServiceDto: {}", serviceDto);
             userHotelServices.add(serviceDto);
         }
 
         RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId());
+        log.info("Fetched RoomDto: {}", roomDto);
 
         APIResponseDto apiResponseDto = new APIResponseDto();
 
@@ -92,23 +109,31 @@ public class ReservationServiceImpl implements ReservationService {
 
         apiResponseDto.setHotelServices(userHotelServices);
 
+        log.info("Completed adding serviceId: {} to reservation for userId: {}", serviceId, userId);
         return apiResponseDto;
 
     }
 
     @Override
     public APIResponseDto getReservation(Long userId) {
+        log.info("Fetching reservation for userId: {}", userId);
 
         //ReservationDto
         Reservation reservation = reservationRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("No reservation found for this user"));
+                .orElseThrow(() -> {
+                    log.error("No reservation found for userId: {}", userId);
+                    return new RuntimeException("No reservation found for this user");
+                });
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(reservation);
+        log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
         //RoomDto
         RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId());
+        log.info("Fetched RoomDto: {}", roomDto);
 
         //UserDto
         UserDto userDto = getUserResponseApi(userId);
+        log.info("Fetched UserDto: {}", userDto);
 
         //HotelServiceDto
         List<HotelServiceDto> userHotelServices = new ArrayList<>();
@@ -116,6 +141,7 @@ public class ReservationServiceImpl implements ReservationService {
         for (int i = 0; i < reservationServices.size(); i++) {
 
             HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i));
+            log.info("Fetched HotelServiceDto: {}", serviceDto);
             userHotelServices.add(serviceDto);
         }
 
@@ -126,6 +152,7 @@ public class ReservationServiceImpl implements ReservationService {
         apiResponseDto.setRoom(roomDto);
         apiResponseDto.setHotelServices(userHotelServices);
 
+        log.info("Completed getting reservation details for userId: {}", userId);
         return apiResponseDto;
     }
 

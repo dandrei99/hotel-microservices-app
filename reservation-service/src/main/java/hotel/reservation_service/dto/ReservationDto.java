@@ -19,4 +19,17 @@ public class ReservationDto {
     private double totalPrice;
     private String reservationStatus;  // Status of the reservation (e.g., CONFIRMED, CANCELED)
     private LocalDateTime createdAt;
+
+    @Override
+    public String toString() {
+        return "ReservationDto{" +
+                "reservationId=" + reservationId +
+                ", userId=" + userId +
+                ", roomId=" + roomId +
+                ", serviceIds=" + serviceIds +
+                ", totalPrice=" + totalPrice +
+                ", reservationStatus='" + reservationStatus + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
