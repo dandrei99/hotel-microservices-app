@@ -158,12 +158,8 @@ const Index = () => {
                                             <div className="banner-info-bg">
                                                 <h5>Location is heavenly. Best to visit in week days to enjoy the
                                                     peaceful beauty</h5>
-                                                <a
-                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
-                                                    href="services.html"
-                                                >
-                                                    Our Services
-                                                </a>
+                                                <Link className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                      to="/services">Our Services</Link>
                                             </div>
                                         </div>
                                     </div>
@@ -188,12 +184,8 @@ const Index = () => {
                                             <div className="banner-info-bg">
                                                 <h5>Our new hotels will play a leading role in prompting the world
                                                     peace.</h5>
-                                                <a
-                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
-                                                    href="services.html"
-                                                >
-                                                    Our Services
-                                                </a>
+                                                <Link className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                      to="/services">Our Services</Link>
                                             </div>
                                         </div>
                                     </div>
@@ -218,12 +210,8 @@ const Index = () => {
                                             <div className="banner-info-bg">
                                                 <h5>Most hotels train their people with the booklets. We take ours to
                                                     the ballet.</h5>
-                                                <a
-                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
-                                                    href="services.html"
-                                                >
-                                                    Our Services
-                                                </a>
+                                                <Link className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                      to="/services">Our Services</Link>
                                             </div>
                                         </div>
                                     </div>
@@ -248,12 +236,8 @@ const Index = () => {
                                             <div className="banner-info-bg">
                                                 <h5>Good tourism will follow good hotels. Experience our luxury hotel
                                                     rooms</h5>
-                                                <a
-                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
-                                                    href="services.html"
-                                                >
-                                                    Our Services
-                                                </a>
+                                                <Link className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                      to="/services">Our Services</Link>
                                             </div>
                                         </div>
                                     </div>

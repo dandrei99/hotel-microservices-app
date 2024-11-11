@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import hotelLogo from '../assets/images/hotels.png';
 import facilities from '../assets/images/facilities.jpg';
@@ -12,8 +13,9 @@ const Services = () => {
             <header className="w3l-header-nav">
                 <nav className="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
                     <div className="container">
-                        <a className="navbar-brand" href="index.html">
-                            <img src={hotelLogo} alt="Your logo" style={{height: '35px'}}/> Hotels</a>
+                        <Link className="navbar-brand" to="/">
+                            <img src={hotelLogo} alt="Your logo" style={{height: '35px'}}/> Hotels
+                        </Link>
                         <button className="navbar-toggler collapsed" type="button" data-toggle="collapse"
                                 data-target="#navbarSupportedContent"
                                 aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -25,13 +27,13 @@ const Services = () => {
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav ml-auto">
                                 <li className="nav-item @@home__active">
-                                    <a className="nav-link" href="index.html">Home</a>
+                                    <Link className="nav-link" to="/">Home</Link>
                                 </li>
                                 <li className="nav-item @@about__active">
                                     <a className="nav-link" href="about.html">About</a>
                                 </li>
                                 <li className="nav-item active">
-                                    <a className="nav-link" href="services.html">Services</a>
+                                    <Link className="nav-link" to="/services">Services</Link>
                                 </li>
                                 <li className="nav-item dropdown @@room__active">
                                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
