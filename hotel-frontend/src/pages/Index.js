@@ -3,25 +3,33 @@ import { Link } from 'react-router-dom';
 import '../assets/css/style-liberty.css';
 import hotelLogo from '../assets/images/hotels.png';
 
+import slide1 from '../assets/images/slide1.jpg';
+import slide2 from '../assets/images/slide2.jpg';
+import slide3 from '../assets/images/slide3.jpg';
+import slide4 from '../assets/images/slide4.jpg';
+
 const Index = () => {
     useEffect(() => {
-        const scripts = [
-            '/assets/js/jquery-3.3.1.min.js',
-            '/assets/js/bootstrap.min.js',
-            '/assets/js/jquery.magnific-popup.min.js',
-            '/assets/js/owl.carousel.js',
-        ];
+        // Ensure jQuery and Owl Carousel are loaded
+        const script = document.createElement('script');
+        script.src = '/assets/js/owl.carousel.js';
+        script.async = true;
+        script.onload = () => {
+            if (window.$) {
+                window.$('.owl-carousel').owlCarousel({
+                    items: 1, // Number of items to display at once
+                    loop: true, // Enable looping
+                    autoplay: true, // Enable autoplay
+                    autoplayTimeout: 5000, // Autoplay interval
+                    dots: true, // Enable dots
+                });
+            }
+        };
+        document.body.appendChild(script);
 
-        scripts.forEach((src) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            document.body.appendChild(script);
-
-            return () => {
-                document.body.removeChild(script);
-            };
-        });
+        return () => {
+            document.body.removeChild(script);
+        };
     }, []);
 
     return (
@@ -30,7 +38,7 @@ const Index = () => {
                 <nav className="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
                     <div className="container">
                         <Link className="navbar-brand" to="/">
-                            <img src={hotelLogo} alt="Your logo" style={{ height: '35px' }} />
+                            <img src={hotelLogo} alt="Your logo" style={{height: '35px'}}/>
                             Hotels
                         </Link>
                         <button
@@ -116,7 +124,138 @@ const Index = () => {
                     </div>
                 </nav>
             </header>
+
+            {/*MAIN-SLIDER*/}
+            <section className="w3l-main-slider" id="home">
+                <div className="companies20-content">
+                    <div className="owl-one owl-carousel owl-theme">
+                        {/* Slider 1 */}
+                        <div className="item">
+                            <li>
+                                <div
+                                    className="slider-info banner-view bg bg2"
+                                    style={{
+                                        backgroundImage: `url(${slide1})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        minHeight: '700px',
+                                    }}
+                                >
+                                    <div className="banner-info">
+                                        <div className="container">
+                                            <div className="banner-info-bg">
+                                                <h5>Location is heavenly. Best to visit in week days to enjoy the
+                                                    peaceful beauty</h5>
+                                                <a
+                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                    href="services.html"
+                                                >
+                                                    Our Services
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+
+                        {/* Slider 2 */}
+                        <div className="item">
+                            <li>
+                                <div
+                                    className="slider-info banner-view bg bg2"
+                                    style={{
+                                        backgroundImage: `url(${slide2})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        minHeight: '700px',
+                                    }}
+                                >
+                                    <div className="banner-info">
+                                        <div className="container">
+                                            <div className="banner-info-bg">
+                                                <h5>Our new hotels will play a leading role in prompting the world
+                                                    peace.</h5>
+                                                <a
+                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                    href="services.html"
+                                                >
+                                                    Our Services
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+
+                        {/* Slider 3 */}
+                        <div className="item">
+                            <li>
+                                <div
+                                    className="slider-info banner-view bg bg2"
+                                    style={{
+                                        backgroundImage: `url(${slide3})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        minHeight: '700px',
+                                    }}
+                                >
+                                    <div className="banner-info">
+                                        <div className="container">
+                                            <div className="banner-info-bg">
+                                                <h5>Most hotels train their people with the booklets. We take ours to
+                                                    the ballet.</h5>
+                                                <a
+                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                    href="services.html"
+                                                >
+                                                    Our Services
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+
+                        {/* Slider 4 */}
+                        <div className="item">
+                            <li>
+                                <div
+                                    className="slider-info banner-view bg bg2"
+                                    style={{
+                                        backgroundImage: `url(${slide4})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        minHeight: '700px',
+                                    }}
+                                >
+                                    <div className="banner-info">
+                                        <div className="container">
+                                            <div className="banner-info-bg">
+                                                <h5>Good tourism will follow good hotels. Experience our luxury hotel
+                                                    rooms</h5>
+                                                <a
+                                                    className="btn btn-style transparent-btn mt-sm-5 mt-4"
+                                                    href="services.html"
+                                                >
+                                                    Our Services
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
         </div>
+
+
     );
 };
 
