@@ -8,6 +8,9 @@ import hotel.services_service.service.HotelServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class HotelServicesServiceImpl implements HotelServicesService {
 
@@ -27,5 +30,15 @@ public class HotelServicesServiceImpl implements HotelServicesService {
         HotelService hotelService = hotelServicesRepository.findByServiceId(serviceId);
         HotelServiceDto hotelServiceDto = HotelServicesMapper.mapToServicesDto(hotelService);
         return hotelServiceDto;
+    }
+
+    @Override
+    public List<HotelServiceDto> getAllServices() {
+        List<HotelService> hotelServices = hotelServicesRepository.findAll();
+        List<HotelServiceDto> hotelServiceDtos = new ArrayList<>();
+        for (HotelService service : hotelServices) {
+            hotelServiceDtos.add(HotelServicesMapper.mapToServicesDto(service));
+        }
+        return hotelServiceDtos;
     }
 }

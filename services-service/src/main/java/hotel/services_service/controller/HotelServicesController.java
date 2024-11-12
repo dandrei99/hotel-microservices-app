@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/services")
 public class HotelServicesController {
@@ -24,5 +26,11 @@ public class HotelServicesController {
     public ResponseEntity<HotelServiceDto> getService(@PathVariable("serviceId") Long serviceId){
         HotelServiceDto hotelServiceDto = hotelServicesService.getServiceById(serviceId);
         return new ResponseEntity<>(hotelServiceDto, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<HotelServiceDto>> getAllServices() {
+        List<HotelServiceDto> hotelServicesDto = hotelServicesService.getAllServices();
+        return new ResponseEntity<>(hotelServicesDto, HttpStatus.OK);
     }
 }
