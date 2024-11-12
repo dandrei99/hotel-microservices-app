@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 import hotelLogo from '../assets/images/hotels.png';
 import facilities from '../assets/images/facilities.jpg';
 
 
 const Services = () => {
+    const [services, setServices] = useState([]); // State to hold services
+
+    // Fetch services from the API
+    useEffect(() => {
+        axios.get('http://localhost:9191/api/services')  //use API Gateway
+            .then((response) => {
+                console.log('Fetched services:', response.data);
+                setServices(response.data); // Set fetched data
+            })
+            .catch((error) => {
+                console.error('Error fetching services:', error);
+            });
+    }, []);
+
     return (
         <div>
 
@@ -89,76 +104,93 @@ const Services = () => {
                                         groups of
                                         travelers. All rooms have private bathrooms, a flat-screen TV and a safe.</p>
                                 </div>
-                                <div className="col-lg-4 col-md-6 mt-md-0 mt-4">
-                                    <div className="features-with-17-right-tp_sur">
-                                        <div className="features-with-17-left1">
-                                            <span className="fa fa-bed" aria-hidden="true"></span>
+
+                                    {services.map((service) => (
+                                        <div className="col-lg-4 col-md-6 mt-4" key={service.service_id}>
+                                            <div className="features-with-17-right-tp_sur">
+                                                <div className="features-with-17-left1">
+                                                    {/*<span className="fa fa-star" aria-hidden="true"></span>*/}
+                                                    <h4>{service.serviceName}</h4>
+                                                    <br/>
+                                                </div>
+                                                <div className="features-with-17-left2">
+                                                    {/*<h5>{service.serviceName}</h5>*/}
+                                                    <h6>${service.price}</h6>
+                                                    <p>{service.description}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="features-with-17-left2">
-                                            <h5>Fitness Zone</h5>
-                                            <h6><a href="#url">Swimming Pool</a></h6>
-                                            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a
-                                                reader will be
-                                                distracted by the readable.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-6 mt-lg-0 mt-sm-5 mt-4">
-                                    <div className="features-with-17-right-tp_sur">
-                                        <div className="features-with-17-left1">
-                                            <span className="fa fa-beer" aria-hidden="true"></span>
-                                        </div>
-                                        <div className="features-with-17-left2">
-                                            <h5>Food & Drinks</h5>
-                                            <h6><a href="#url">Restaurant and Bar</a></h6>
-                                            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a
-                                                reader will be
-                                                distracted by the readable.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-6 mt-sm-5 mt-4">
-                                    <div className="features-with-17-right-tp_sur">
-                                        <div className="features-with-17-left1">
-                                            <span className="fa fa-wifi" aria-hidden="true"></span>
-                                        </div>
-                                        <div className="features-with-17-left2">
-                                            <h5>Accommodation</h5>
-                                            <h6><a href="#url">High speed WiFi</a></h6>
-                                            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a
-                                                reader will be
-                                                distracted by the readable.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-6 mt-sm-5 mt-4">
-                                    <div className="features-with-17-right-tp_sur">
-                                        <div className="features-with-17-left1">
-                                            <span className="fa fa-bed" aria-hidden="true"></span>
-                                        </div>
-                                        <div className="features-with-17-left2">
-                                            <h5>Comfort & Relax</h5>
-                                            <h6><a href="#url">SPA & Wellness</a></h6>
-                                            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a
-                                                reader will be
-                                                distracted by the readable.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-6 mt-sm-5 mt-4">
-                                    <div className="features-with-17-right-tp_sur">
-                                        <div className="features-with-17-left1">
-                                            <span className="fa fa-headphones" aria-hidden="true"></span>
-                                        </div>
-                                        <div className="features-with-17-left2">
-                                            <h5>Safe & Secure </h5>
-                                            <h6><a href="#url">Staff 24/7</a></h6>
-                                            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a
-                                                reader will be
-                                                distracted by the readable.</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                    ))}
+                                {/*<div className="col-lg-4 col-md-6 mt-md-0 mt-4">*/}
+                                {/*    <div className="features-with-17-right-tp_sur">*/}
+                                {/*        <div className="features-with-17-left1">*/}
+                                {/*            <span className="fa fa-bed" aria-hidden="true"></span>*/}
+                                {/*        </div>*/}
+                                {/*        <div className="features-with-17-left2">*/}
+                                {/*            <h5>Fitness Zone</h5>*/}
+                                {/*            <h6><a href="#url">Swimming Pool</a></h6>*/}
+                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
+                                {/*                reader will be*/}
+                                {/*                distracted by the readable.</p>*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+                                {/*<div className="col-lg-4 col-md-6 mt-lg-0 mt-sm-5 mt-4">*/}
+                                {/*    <div className="features-with-17-right-tp_sur">*/}
+                                {/*        <div className="features-with-17-left1">*/}
+                                {/*            <span className="fa fa-beer" aria-hidden="true"></span>*/}
+                                {/*        </div>*/}
+                                {/*        <div className="features-with-17-left2">*/}
+                                {/*            <h5>Food & Drinks</h5>*/}
+                                {/*            <h6><a href="#url">Restaurant and Bar</a></h6>*/}
+                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
+                                {/*                reader will be*/}
+                                {/*                distracted by the readable.</p>*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+                                {/*<div className="col-lg-4 col-md-6 mt-sm-5 mt-4">*/}
+                                {/*    <div className="features-with-17-right-tp_sur">*/}
+                                {/*        <div className="features-with-17-left1">*/}
+                                {/*            <span className="fa fa-wifi" aria-hidden="true"></span>*/}
+                                {/*        </div>*/}
+                                {/*        <div className="features-with-17-left2">*/}
+                                {/*            <h5>Accommodation</h5>*/}
+                                {/*            <h6><a href="#url">High speed WiFi</a></h6>*/}
+                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
+                                {/*                reader will be*/}
+                                {/*                distracted by the readable.</p>*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+                                {/*<div className="col-lg-4 col-md-6 mt-sm-5 mt-4">*/}
+                                {/*    <div className="features-with-17-right-tp_sur">*/}
+                                {/*        <div className="features-with-17-left1">*/}
+                                {/*            <span className="fa fa-bed" aria-hidden="true"></span>*/}
+                                {/*        </div>*/}
+                                {/*        <div className="features-with-17-left2">*/}
+                                {/*            <h5>Comfort & Relax</h5>*/}
+                                {/*            <h6><a href="#url">SPA & Wellness</a></h6>*/}
+                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
+                                {/*                reader will be*/}
+                                {/*                distracted by the readable.</p>*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+                                {/*<div className="col-lg-4 col-md-6 mt-sm-5 mt-4">*/}
+                                {/*    <div className="features-with-17-right-tp_sur">*/}
+                                {/*        <div className="features-with-17-left1">*/}
+                                {/*            <span className="fa fa-headphones" aria-hidden="true"></span>*/}
+                                {/*        </div>*/}
+                                {/*        <div className="features-with-17-left2">*/}
+                                {/*            <h5>Safe & Secure </h5>*/}
+                                {/*            <h6><a href="#url">Staff 24/7</a></h6>*/}
+                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
+                                {/*                reader will be*/}
+                                {/*                distracted by the readable.</p>*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
                             </div>
                         </div>
                     </div>
