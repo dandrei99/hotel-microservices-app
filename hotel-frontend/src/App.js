@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Index from './pages/Index';
 import Services from './pages/Services';
+import Rooms from './pages/Rooms';
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/rooms" element={<Rooms />} />
             </Routes>
         </Router>
     );
