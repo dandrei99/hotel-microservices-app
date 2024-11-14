@@ -56,7 +56,7 @@ const Services = () => {
                                         Rooms <span className="fa fa-angle-down"></span>
                                     </a>
                                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a className="dropdown-item" href="room.html">Rooms</a>
+                                        <Link className="dropdown-item" to="/rooms">Rooms</Link>
                                         <a className="dropdown-item" href="room-single.html">Room Single</a>
                                     </div>
                                 </li>

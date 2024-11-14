@@ -95,7 +95,7 @@ const Index = () => {
                                         Rooms <span className="fa fa-angle-down"></span>
                                     </button>
                                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <Link className="dropdown-item" to="/room">
+                                        <Link className="dropdown-item" to="/rooms">
                                             Rooms
                                         </Link>
                                         <Link className="dropdown-item" to="/room-single">
