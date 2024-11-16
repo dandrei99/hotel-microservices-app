@@ -86,7 +86,7 @@ const Services = () => {
                     <div className="container py-lg-3">
 
                         <h2>Our Services</h2>
-                        <p><a href="index.html">Home</a> &nbsp; / &nbsp; Services</p>
+                        <p><Link to="/">Home</Link> &nbsp; / &nbsp; Services</p>
 
                     </div>
                 </div>

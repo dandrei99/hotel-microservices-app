@@ -92,7 +92,7 @@ const Rooms = () => {
                     <div className="container py-lg-3">
 
                         <h2>Rooms</h2>
-                        <p><a href="index.html">Home</a> &nbsp; / &nbsp; rooms</p>
+                        <p><Link to="/">Home</Link> &nbsp; / &nbsp; Rooms</p>
 
                     </div>
                 </div>
@@ -142,7 +142,7 @@ const Rooms = () => {
                                                 <li><a href="#url"><span className="fa fa-motorcycle"
                                                                          title="Bike Rental"></span></a></li>
                                             </ul>
-                                            <a href="room-single.html" className="btn view">Full Info →</a>
+                                            <Link to={`/rooms/${room.roomId}`} className="btn view">Full Info →</Link>
                                         </div>
                                     </div>
                                 </div>
