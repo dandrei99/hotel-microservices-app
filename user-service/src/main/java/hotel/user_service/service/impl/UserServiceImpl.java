@@ -35,4 +35,11 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = userMapper.mapToUserDto(user);
         return userDto;
     }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        UserDto userDto = userMapper.mapToUserDto(user);
+        return userDto;
+    }
 }

@@ -38,4 +38,10 @@ public class UserController {
         UserDto userDto = userService.getUserById(userId);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
+
+    @GetMapping("getUserByEmail/{userEmail}")
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable("userEmail") String email){
+        UserDto userDto = userService.getUserByEmail(email);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
 }
