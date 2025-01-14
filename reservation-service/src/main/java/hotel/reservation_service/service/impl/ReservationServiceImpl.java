@@ -5,10 +5,13 @@ import hotel.reservation_service.entity.Reservation;
 import hotel.reservation_service.mapper.ReservationMapper;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.ReservationService;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,22 +20,33 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
     private static final Logger log = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
-    @Autowired
-    ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
 
-    @Autowired
-    WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
+
+    @Qualifier("unsecuredWebClientBuilder")
+    private final WebClient.Builder unsecuredWebClientBuilder;
+
+//    private WebClient webClient;
+//
+//    @PostConstruct
+//    public void initWebClient() {
+//        this.webClient = webClientBuilder.build();
+//        log.info("Initialized WebClient: {}", webClient);
+//    }
 
     @Override
-    public APIResponseDto saveReservation(Long userId, Long roomId) {
+    public APIResponseDto saveReservation(Long userId, Long roomId, String token) {
         log.info("Starting to create reservation for userId: {} and roomId: {}", userId, roomId);
 
-        // check user doesn't already have a reservation
+        WebClient webClient = webClientBuilder.build();
+
+        // check if user has a reservation
         Optional<Reservation> hasReservation = reservationRepository.findByUserId(userId);
         if(hasReservation.isPresent()){
             log.info("User with ID: {} already has a reservation", userId);
@@ -56,7 +70,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDto.setCreatedAt(savedReservation.getCreatedAt());
         log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
-        UserDto userDto = getUserResponseApi(userId);
+        UserDto userDto = getUserResponseApi(userId, token);
         log.info("Fetched UserDto: {}", userDto);
         RoomDto roomDto = getRoomResponseApi(roomId);
         log.info("Fetched RoomDto: {}", roomDto);
@@ -72,7 +86,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public APIResponseDto addServiceToReservation(Long userId, Long serviceId) {
+    public APIResponseDto addServiceToReservation(Long userId, Long serviceId, String token) {
         log.info("Adding serviceId: {} to reservation for userId: {}", serviceId, userId);
 
         Reservation reservation = reservationRepository.findByUserId(userId)
@@ -93,7 +107,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation updatedReservation = reservationRepository.save(reservation);
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
 
-        UserDto userDto = getUserResponseApi(userId);
+        UserDto userDto = getUserResponseApi(userId, token);
         log.info("Fetched UserDto: {}", userDto);
 
         //set existing hotel services of the reservation to the APIResponseDto
@@ -122,7 +136,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public APIResponseDto getReservation(Long userId) {
+    public APIResponseDto getReservation(Long userId, String token) {
         log.info("Fetching reservation for userId: {}", userId);
 
         //ReservationDto
@@ -139,7 +153,7 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Fetched RoomDto: {}", roomDto);
 
         //UserDto
-        UserDto userDto = getUserResponseApi(userId);
+        UserDto userDto = getUserResponseApi(userId, token);
         log.info("Fetched UserDto: {}", userDto);
 
         //HotelServiceDto
@@ -163,21 +177,27 @@ public class ReservationServiceImpl implements ReservationService {
         return apiResponseDto;
     }
 
-    private UserDto getUserResponseApi(Long userId) {
+    private UserDto getUserResponseApi(Long userId, String token) {
+        log.info("Fetching UserDto for userId: {}", userId);
 
-        UserDto userDto = webClient.get()
-                .uri("http://localhost:8080/api/users/" + userId)
+//        WebClient webClient = webClientBuilder.build();
+        WebClient securedWebClient = webClientBuilder.build();
+        UserDto userDto = securedWebClient.get()
+                .uri("http://localhost:9191/api/users/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(UserDto.class)
                 .block();
 
+        log.info("Fetched UserDto: {}", userDto);
         return userDto;
     }
 
     private RoomDto getRoomResponseApi(Long roomId) {
 
-        RoomDto roomDto = webClient.get()
-                .uri("http://localhost:8081/api/rooms/" + roomId)
+        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
+        RoomDto roomDto = unsecuredWebClient.get()
+                .uri("http://localhost:9191/api/rooms/" + roomId)
                 .retrieve()
                 .bodyToMono(RoomDto.class)
                 .block();
@@ -187,8 +207,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     private HotelServiceDto getHotelServiceResponseApi(Long serviceId) {
 
-        HotelServiceDto serviceDto = webClient.get()
-                .uri("http://localhost:8082/api/services/" + serviceId)
+        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
+        HotelServiceDto serviceDto = unsecuredWebClient.get()
+                .uri("http://localhost:9191/api/services/" + serviceId)
                 .retrieve()
                 .bodyToMono(HotelServiceDto.class)
                 .block();
