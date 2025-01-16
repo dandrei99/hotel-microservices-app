@@ -72,7 +72,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         UserDto userDto = getUserResponseApi(userId, token);
         log.info("Fetched UserDto: {}", userDto);
-        RoomDto roomDto = getRoomResponseApi(roomId);
+        RoomDto roomDto = getRoomResponseApi(roomId, token);
         log.info("Fetched RoomDto: {}", roomDto);
 
         //create the API Response
@@ -120,7 +120,7 @@ public class ReservationServiceImpl implements ReservationService {
             userHotelServices.add(serviceDto);
         }
 
-        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId());
+        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
         //create the API Response
@@ -149,7 +149,7 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
         //RoomDto
-        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId());
+        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
         //UserDto
@@ -193,11 +193,14 @@ public class ReservationServiceImpl implements ReservationService {
         return userDto;
     }
 
-    private RoomDto getRoomResponseApi(Long roomId) {
+    private RoomDto getRoomResponseApi(Long roomId, String token) {
+        log.info("Fetching RoomDto for roomId: {}", roomId);
 
-        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
-        RoomDto roomDto = unsecuredWebClient.get()
+//        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
+        WebClient securedWebClient = webClientBuilder.build();
+        RoomDto roomDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/rooms/" + roomId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(RoomDto.class)
                 .block();
