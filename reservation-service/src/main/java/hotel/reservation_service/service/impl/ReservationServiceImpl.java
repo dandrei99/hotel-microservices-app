@@ -115,7 +115,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         for (int i = 0; i < reservationServices.size(); i++) {
 
-            HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i));
+            HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i), token);
             log.info("Fetched HotelServiceDto: {}", serviceDto);
             userHotelServices.add(serviceDto);
         }
@@ -161,7 +161,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<Long> reservationServices = reservation.getServiceIds();
         for (int i = 0; i < reservationServices.size(); i++) {
 
-            HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i));
+            HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i), token);
             log.info("Fetched HotelServiceDto: {}", serviceDto);
             userHotelServices.add(serviceDto);
         }
@@ -208,11 +208,13 @@ public class ReservationServiceImpl implements ReservationService {
         return roomDto;
     }
 
-    private HotelServiceDto getHotelServiceResponseApi(Long serviceId) {
+    private HotelServiceDto getHotelServiceResponseApi(Long serviceId, String token) {
 
-        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
-        HotelServiceDto serviceDto = unsecuredWebClient.get()
+//        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
+        WebClient securedWebClient = webClientBuilder.build();
+        HotelServiceDto serviceDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/services/" + serviceId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(HotelServiceDto.class)
                 .block();
