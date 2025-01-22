@@ -5,12 +5,14 @@ import Index from './pages/Index';
 import Services from './pages/Services';
 import Rooms from './pages/Rooms';
 import RoomView from './pages/RoomView';
+import Login from "./pages/Login";
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/rooms/:roomId" element={<RoomView />} />
