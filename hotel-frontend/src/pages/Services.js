@@ -11,7 +11,14 @@ const Services = () => {
 
     // Fetch services from the API
     useEffect(() => {
-        axios.get('http://localhost:9191/api/services')  //use API Gateway
+
+        const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+
+        axios.get('http://localhost:9191/api/services',{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })  //use API Gateway
             .then((response) => {
                 console.log('Fetched services:', response.data);
                 setServices(response.data); // Set fetched data

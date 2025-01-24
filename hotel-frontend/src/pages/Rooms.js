@@ -14,7 +14,14 @@ const Rooms = () => {
     const [rooms, setRooms] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:9191/api/rooms/all')
+
+        const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+
+        axios.get('http://localhost:9191/api/rooms/all', {
+            headers: {
+                Authorization: `Bearer ${token}`  //Add Authorization header
+            }
+        })
             .then((response) => {
                 console.log(response.data);
                 setRooms(response.data); //set fetched data

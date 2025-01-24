@@ -9,7 +9,13 @@ const RoomView = () => {
 
     useEffect(() =>{
 
-        axios.get(`http://localhost:9191/api/rooms/${roomId}`)
+        const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+
+        axios.get(`http://localhost:9191/api/rooms/${roomId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
             .then((response) => {
                 console.log(response.data);
                 setRoom(response.data); //set fetched data
