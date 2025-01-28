@@ -5,8 +5,6 @@ import hotel.reservation_service.entity.Reservation;
 import hotel.reservation_service.mapper.ReservationMapper;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.ReservationService;
-import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,16 +40,20 @@ public class ReservationServiceImpl implements ReservationService {
 //    }
 
     @Override
-    public APIResponseDto saveReservation(Long userId, Long roomId, String token) {
+    public APIResponseDto saveReservation(Long userId, Long roomId, String token, ReservationDatesRequestDto reservationDates) {
         log.info("Starting to create reservation for userId: {} and roomId: {}", userId, roomId);
 
         WebClient webClient = webClientBuilder.build();
 
-        // check if user has a reservation
-        Optional<Reservation> hasReservation = reservationRepository.findByUserId(userId);
-        if(hasReservation.isPresent()){
-            log.info("User with ID: {} already has a reservation", userId);
-            throw new RuntimeException("User already has a reservation");
+//        // check if user has a reservation
+//        Optional<Reservation> hasReservation = reservationRepository.findByUserId(userId);
+//        if(hasReservation.isPresent()){
+//            log.info("User with ID: {} already has a reservation", userId);
+//            throw new RuntimeException("User already has a reservation");
+//        }
+
+        if(!isRoomAvailable(roomId,reservationDates.getCheckIn(),reservationDates.getCheckOut())){
+            throw new RuntimeException("Room is not available in the selected time period");
         }
 
         // Create and save a new Reservation
@@ -58,6 +61,8 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setUserId(userId);
         reservation.setRoomId(roomId);
         reservation.setReservationStatus(Reservation.ReservationStatus.CONFIRMED);
+        reservation.setCheckIn(reservationDates.getCheckIn());
+        reservation.setCheckOut(reservationDates.getCheckOut());
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
@@ -68,12 +73,14 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDto.setRoomId(savedReservation.getRoomId());
         reservationDto.setReservationStatus(String.valueOf(savedReservation.getReservationStatus()));
         reservationDto.setCreatedAt(savedReservation.getCreatedAt());
+        reservationDto.setCheckIn(savedReservation.getCheckIn());
+        reservationDto.setCheckOut(savedReservation.getCheckOut());
         log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
         UserDto userDto = getUserResponseApi(userId, token);
         log.info("Fetched UserDto: {}", userDto);
         RoomDto roomDto = getRoomResponseApi(roomId, token);
-        log.info("Fetched RoomDto: {}", roomDto);
+        log.info("Fetched RoomDto: {}",    roomDto);
 
         //create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
@@ -175,6 +182,35 @@ public class ReservationServiceImpl implements ReservationService {
 
         log.info("Completed getting reservation details for userId: {}", userId);
         return apiResponseDto;
+    }
+
+    public boolean isRoomAvailable(Long roomId,  LocalDate newCheckIn, LocalDate newCheckOut){
+        List<Reservation> RoomReservations = reservationRepository.findByRoomId(roomId);
+
+        for(Reservation reservation: RoomReservations){
+            //rule 0: keep only CONFIRMED reservations
+            if(!reservation.getReservationStatus().equals(Reservation.ReservationStatus.CONFIRMED)){
+//                RoomReservations.remove(reservation);
+                continue;
+            }
+            //rule 1: newCheckIn date matches checkIn date of another reservation -> Room not available
+            if(reservation.getCheckIn().equals(newCheckIn)){
+                return false;
+            }
+            //rule 2: newCheckOut date matches checkOut date of another reservation -> Room not available
+            if(reservation.getCheckOut().equals(newCheckOut)){
+                return false;
+            }
+            //rule 3: Condition for a new reservation to be ok:
+            // (newCheckOut date <= checkIn date) || (newCheckIn date >= checkOut date)
+            if(!((newCheckIn.isAfter(reservation.getCheckOut()) || newCheckIn.isEqual(reservation.getCheckOut()))
+                    || (newCheckOut.isBefore(reservation.getCheckIn()) || newCheckOut.isEqual(reservation.getCheckIn()))  )){
+                //new reservation is overlapping with an existing reservation
+//                log.info("new reservation with dates: {} is overlapping with reservation: {}, with ",reservationDates, reservation);
+                return false;
+            }
+        }
+        return true;
     }
 
     private UserDto getUserResponseApi(Long userId, String token) {

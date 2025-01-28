@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class ReservationDto {
     private Long roomId;  // ID of the reserved room
     private List<Long> serviceIds;  // List of service IDs associated with the reservation
     private double totalPrice;
+    private LocalDate checkIn;
+    private LocalDate checkOut;
     private String reservationStatus;  // Status of the reservation (e.g., CONFIRMED, CANCELED)
     private LocalDateTime createdAt;
 

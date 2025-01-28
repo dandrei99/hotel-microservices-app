@@ -12,6 +12,8 @@ public class ReservationMapper {
                 reservation.getRoomId(),
                 reservation.getServiceIds(),
                 reservation.getTotalPrice(),
+                reservation.getCheckIn(),
+                reservation.getCheckOut(),
                 String.valueOf(reservation.getReservationStatus()),
                 reservation.getCreatedAt()
         );
@@ -25,6 +27,8 @@ public class ReservationMapper {
                 reservationDto.getRoomId(),
                 reservationDto.getServiceIds(),
                 reservationDto.getTotalPrice(),
+                reservationDto.getCheckIn(),
+                reservationDto.getCheckOut(),
                 Reservation.ReservationStatus.valueOf(reservationDto.getReservationStatus()),
                 reservationDto.getCreatedAt()
         );

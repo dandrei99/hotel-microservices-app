@@ -1,15 +1,14 @@
 package hotel.reservation_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,6 +34,12 @@ public class Reservation {
 
     private double totalPrice;
 
+    @Column(nullable = true)  //(nullable = false)
+    private LocalDate checkIn;
+
+    @Column(nullable = true)  //(nullable = false)
+    private LocalDate checkOut;
+
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
@@ -43,6 +48,7 @@ public class Reservation {
 
     public enum ReservationStatus {
         CONFIRMED,
-        CANCELED
+        CANCELED,
+        COMPLETED
     }
 }

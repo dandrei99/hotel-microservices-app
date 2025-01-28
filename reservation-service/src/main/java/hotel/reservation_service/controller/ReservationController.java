@@ -1,6 +1,7 @@
 package hotel.reservation_service.controller;
 
 import hotel.reservation_service.dto.APIResponseDto;
+import hotel.reservation_service.dto.ReservationDatesRequestDto;
 import hotel.reservation_service.service.ReservationService;
 import hotel.reservation_service.service.impl.ReservationServiceImpl;
 import org.slf4j.Logger;
@@ -21,7 +22,10 @@ public class ReservationController {
     ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<APIResponseDto> saveReservation(@RequestParam Long userId, @RequestParam Long roomId, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<APIResponseDto> saveReservation(@RequestParam Long userId,
+                                                          @RequestParam Long roomId,
+                                                          @RequestHeader HttpHeaders headers,
+                                                          @RequestBody ReservationDatesRequestDto reservationDates) {
         // Extract the Authorization header
         String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -32,7 +36,7 @@ public class ReservationController {
         String token = authorizationHeader.substring(7);
 
         log.info("Extracted Authorization token: {}", token);
-        APIResponseDto apiResponseDto = reservationService.saveReservation(userId, roomId, token);
+        APIResponseDto apiResponseDto = reservationService.saveReservation(userId, roomId, token,reservationDates);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
 
