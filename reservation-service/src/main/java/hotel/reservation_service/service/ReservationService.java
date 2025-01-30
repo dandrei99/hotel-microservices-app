@@ -7,7 +7,7 @@ public interface ReservationService {
 
     APIResponseDto saveReservation(Long userId, Long roomId, String token, ReservationDatesRequestDto reservationDates);
 
-    APIResponseDto addServiceToReservation(Long userId, Long serviceId, String token);
+    APIResponseDto addServiceToReservationByDate(Long userId, Long serviceId,ReservationDatesRequestDto reservationDates, String token);
 
     APIResponseDto getReservation(Long userId, String token);
 }

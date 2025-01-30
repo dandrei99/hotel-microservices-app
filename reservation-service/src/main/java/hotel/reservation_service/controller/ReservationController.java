@@ -36,12 +36,15 @@ public class ReservationController {
         String token = authorizationHeader.substring(7);
 
         log.info("Extracted Authorization token: {}", token);
-        APIResponseDto apiResponseDto = reservationService.saveReservation(userId, roomId, token,reservationDates);
+        APIResponseDto apiResponseDto = reservationService.saveReservation(userId, roomId, token, reservationDates);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/addHotelService")
-    public ResponseEntity<APIResponseDto> addServiceToReservation(@RequestParam Long userId, @RequestParam Long serviceId, @RequestHeader HttpHeaders headers){
+    public ResponseEntity<APIResponseDto> addServiceToReservation(@RequestParam Long userId,
+                                                                  @RequestParam Long serviceId,
+                                                                  @RequestHeader HttpHeaders headers,
+                                                                  @RequestBody ReservationDatesRequestDto reservationDates){
         // Extract the Authorization header
         String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -53,7 +56,7 @@ public class ReservationController {
 
         log.info("Extracted Authorization token: {}", token);
 
-        APIResponseDto apiResponseDto = reservationService.addServiceToReservation(userId, serviceId, token);
+        APIResponseDto apiResponseDto = reservationService.addServiceToReservationByDate(userId, serviceId, reservationDates, token);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 

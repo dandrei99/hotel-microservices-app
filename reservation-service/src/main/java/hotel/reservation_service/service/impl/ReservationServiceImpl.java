@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,16 +46,14 @@ public class ReservationServiceImpl implements ReservationService {
 
         WebClient webClient = webClientBuilder.build();
 
-//        // check if user has a reservation
-//        Optional<Reservation> hasReservation = reservationRepository.findByUserId(userId);
-//        if(hasReservation.isPresent()){
-//            log.info("User with ID: {} already has a reservation", userId);
-//            throw new RuntimeException("User already has a reservation");
-//        }
-
         if(!isRoomAvailable(roomId,reservationDates.getCheckIn(),reservationDates.getCheckOut())){
             throw new RuntimeException("Room is not available in the selected time period");
         }
+
+        UserDto userDto = getUserResponseApi(userId, token);
+        log.info("Fetched UserDto: {}", userDto);
+        RoomDto roomDto = getRoomResponseApi(roomId, token);
+        log.info("Fetched RoomDto: {}",    roomDto);
 
         // Create and save a new Reservation
         Reservation reservation = new Reservation();
@@ -63,6 +62,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setReservationStatus(Reservation.ReservationStatus.CONFIRMED);
         reservation.setCheckIn(reservationDates.getCheckIn());
         reservation.setCheckOut(reservationDates.getCheckOut());
+        reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(),reservationDates.getCheckIn(),reservationDates.getCheckOut(), null));
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
@@ -77,10 +77,6 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDto.setCheckOut(savedReservation.getCheckOut());
         log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
-        UserDto userDto = getUserResponseApi(userId, token);
-        log.info("Fetched UserDto: {}", userDto);
-        RoomDto roomDto = getRoomResponseApi(roomId, token);
-        log.info("Fetched RoomDto: {}",    roomDto);
 
         //create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
@@ -93,31 +89,26 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public APIResponseDto addServiceToReservation(Long userId, Long serviceId, String token) {
+    public APIResponseDto addServiceToReservationByDate(Long userId, Long serviceId, ReservationDatesRequestDto reservationDates, String token) {
         log.info("Adding serviceId: {} to reservation for userId: {}", serviceId, userId);
 
-        Reservation reservation = reservationRepository.findByUserId(userId)
+        //CHECK RESERVATION EXISTS FOR USER BETWEEN THOSE DATES
+        Reservation reservation = reservationRepository.findByUserIdAndCheckInAndCheckOut(userId, reservationDates.getCheckIn(), reservationDates.getCheckOut())
                 .orElseThrow(() -> {
-                    log.info("No reservation found for userId: {}", userId);
-                    return new RuntimeException("No reservation found for this user");
+                    log.info("No reservation found for userId: {}, between those dates:{} - {}", userId, reservationDates.getCheckIn(), reservationDates.getCheckOut());
+                    return new RuntimeException("No reservation found for this user, between those dates");
                 });
 
-        //add service
+        //CHECK SERVICE DOESN'T EXIST ALREADY IN RESERVATION
         List<Long> reservationServices = reservation.getServiceIds();
         if (reservationServices.contains(serviceId)) {
             log.info("Service with ID: {} is already added to the reservation for userId: {}", serviceId, userId);
             throw new IllegalArgumentException("Service with ID " + serviceId + " is already added to the reservation.");
         }
+        //ADD SERVICEID TO RESERVATION
         reservationServices.add(serviceId);
-        reservation.setServiceIds(reservationServices);
 
-        Reservation updatedReservation = reservationRepository.save(reservation);
-        ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
-
-        UserDto userDto = getUserResponseApi(userId, token);
-        log.info("Fetched UserDto: {}", userDto);
-
-        //set existing hotel services of the reservation to the APIResponseDto
+        //POPULATE userHotelServices TO HAVE ALL DATA ABOUT EACH SERVICE
         List<HotelServiceDto> userHotelServices = new ArrayList<>();
 
         for (int i = 0; i < reservationServices.size(); i++) {
@@ -127,8 +118,19 @@ public class ReservationServiceImpl implements ReservationService {
             userHotelServices.add(serviceDto);
         }
 
-        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
+        //GET DTO'S, TO HAVE ALL DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
+        RoomDto roomDto = getRoomResponseApi(reservation.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
+
+        UserDto userDto = getUserResponseApi(userId, token);
+        log.info("Fetched UserDto: {}", userDto);
+
+        //UPDATE RESERVATION WITH NEW SERVICE AND WITH NEW TOTAL PRICE OF RESERVATION
+        reservation.setServiceIds(reservationServices);
+        reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(), reservationDates.getCheckIn(), reservationDates.getCheckOut(), userHotelServices));
+        Reservation updatedReservation = reservationRepository.save(reservation);
+
+        ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
 
         //create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
@@ -139,7 +141,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         log.info("Completed adding serviceId: {} to reservation for userId: {}", serviceId, userId);
         return apiResponseDto;
-
     }
 
     @Override
@@ -211,6 +212,19 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         return true;
+    }
+
+    public double calculateReservationPrice(double pricePerNight, LocalDate checkIn, LocalDate checkOut, List<HotelServiceDto> userHotelServices) {
+        int nrOfDays = (int) ChronoUnit.DAYS.between(checkIn, checkOut);
+        double totalPrice = nrOfDays * pricePerNight;
+        if (userHotelServices == null) {
+            return totalPrice;
+        } else {
+            for (HotelServiceDto hotelService : userHotelServices) {
+                totalPrice += hotelService.getPrice();
+            }
+            return totalPrice;
+        }
     }
 
     private UserDto getUserResponseApi(Long userId, String token) {

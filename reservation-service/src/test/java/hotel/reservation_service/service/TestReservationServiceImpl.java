@@ -1,6 +1,9 @@
 package hotel.reservation_service.service;
 
 
+import hotel.reservation_service.dto.HotelServiceDto;
+import hotel.reservation_service.dto.ReservationDto;
+import hotel.reservation_service.dto.RoomDto;
 import hotel.reservation_service.entity.Reservation;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.impl.ReservationServiceImpl;
@@ -15,8 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
@@ -145,4 +147,49 @@ public class TestReservationServiceImpl {
         boolean isRoomAvailable = serviceImpl.isRoomAvailable(1L, newCheckIn,newCheckOut);
         assertTrue(isRoomAvailable);
     }
+
+
+    @Test
+    public void calculateTotalPriceOfReservation_NOServices(){
+        ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setCheckIn( LocalDate.of(2024,6,14));
+        reservationDto.setCheckOut( LocalDate.of(2024,6,16));
+
+        RoomDto roomDto = new RoomDto();
+        roomDto.setPricePerNight(100);
+
+        assertEquals(200,serviceImpl.calculateReservationPrice(roomDto.getPricePerNight(), reservationDto.getCheckIn(),reservationDto.getCheckOut(),null));
+    }
+
+    @Test
+    public void calculateTotalPriceOfReservation_WithServices(){
+        ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setCheckIn( LocalDate.of(2024,6,14));
+        reservationDto.setCheckOut( LocalDate.of(2024,6,16));
+
+        RoomDto roomDto = new RoomDto();
+        roomDto.setPricePerNight(100);
+
+        List<HotelServiceDto> userHotelServices = new ArrayList<>();
+        HotelServiceDto hotelService1 = new HotelServiceDto();
+        hotelService1.setPrice(45);
+        userHotelServices.add(hotelService1);
+
+        HotelServiceDto hotelService2 = new HotelServiceDto();
+        hotelService2.setPrice(15);
+        userHotelServices.add(hotelService2);
+
+        HotelServiceDto hotelService3 = new HotelServiceDto();
+        hotelService3.setPrice(20);
+        userHotelServices.add(hotelService3);
+
+        HotelServiceDto hotelService4 = new HotelServiceDto();
+        hotelService4.setPrice(50);
+        userHotelServices.add(hotelService4);
+
+        assertEquals(330,serviceImpl.calculateReservationPrice(roomDto.getPricePerNight(), reservationDto.getCheckIn(),reservationDto.getCheckOut(), userHotelServices));
+    }
+
+
+
 }
