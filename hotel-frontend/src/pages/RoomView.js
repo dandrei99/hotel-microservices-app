@@ -116,7 +116,7 @@ const RoomView = () => {
                                         <p> Per night</p>
                                     </div>
                                     <div className="book-btn px-2">
-                                        <a href="booking.html" class="btn btn-style btn-secondary mt-3">Book Now</a>
+                                        <Link to={`/reservation/${room.roomId}`} className="btn btn-style btn-secondary mt-3">Book Now</Link>
                                     </div>
                                 </div>
                                 <ul className="room-amenities">
