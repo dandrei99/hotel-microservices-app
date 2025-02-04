@@ -41,8 +41,8 @@ public class ReservationServiceImpl implements ReservationService {
 //    }
 
     @Override
-    public APIResponseDto saveReservation(Long userId, Long roomId, String token, ReservationDatesRequestDto reservationDates) {
-        log.info("Starting to create reservation for userId: {} and roomId: {}", userId, roomId);
+    public APIResponseDto saveReservation(String userEmail, Long roomId, String token, ReservationDatesRequestDto reservationDates) {
+        log.info("Starting to create reservation for user: {} and roomId: {}", userEmail, roomId);
 
         WebClient webClient = webClientBuilder.build();
 
@@ -50,14 +50,14 @@ public class ReservationServiceImpl implements ReservationService {
             throw new RuntimeException("Room is not available in the selected time period");
         }
 
-        UserDto userDto = getUserResponseApi(userId, token);
+        UserDto userDto = getUserByEmailResponseApi(userEmail, token);
         log.info("Fetched UserDto: {}", userDto);
         RoomDto roomDto = getRoomResponseApi(roomId, token);
         log.info("Fetched RoomDto: {}",    roomDto);
 
         // Create and save a new Reservation
         Reservation reservation = new Reservation();
-        reservation.setUserId(userId);
+        reservation.setUserId(userDto.getUserId());
         reservation.setRoomId(roomId);
         reservation.setReservationStatus(Reservation.ReservationStatus.CONFIRMED);
         reservation.setCheckIn(reservationDates.getCheckIn());
@@ -75,7 +75,8 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDto.setCreatedAt(savedReservation.getCreatedAt());
         reservationDto.setCheckIn(savedReservation.getCheckIn());
         reservationDto.setCheckOut(savedReservation.getCheckOut());
-        log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
+        reservationDto.setTotalPrice(savedReservation.getTotalPrice());
+        log.info("User {} has the following reservation: {}", userEmail, reservationDto);
 
 
         //create the API Response
@@ -84,25 +85,28 @@ public class ReservationServiceImpl implements ReservationService {
         apiResponseDto.setRoom(roomDto);
         apiResponseDto.setReservation(reservationDto);
 
-        log.info("Completed reservation creation for userId: {} and roomId: {}", userId, roomId);
+        log.info("Completed reservation creation for user: {} and roomId: {}", userEmail, roomId);
         return apiResponseDto;
     }
 
     @Override
-    public APIResponseDto addServiceToReservationByDate(Long userId, Long serviceId, ReservationDatesRequestDto reservationDates, String token) {
-        log.info("Adding serviceId: {} to reservation for userId: {}", serviceId, userId);
+    public APIResponseDto addServiceToReservationByDate(String userEmail, Long serviceId, ReservationDatesRequestDto reservationDates, String token) {
+        log.info("Adding serviceId: {} to reservation for user: {}", serviceId, userEmail);
+
+        UserDto userDto = getUserByEmailResponseApi(userEmail, token);
+        log.info("Fetched UserDto: {}", userDto);
 
         //CHECK RESERVATION EXISTS FOR USER BETWEEN THOSE DATES
-        Reservation reservation = reservationRepository.findByUserIdAndCheckInAndCheckOut(userId, reservationDates.getCheckIn(), reservationDates.getCheckOut())
+        Reservation reservation = reservationRepository.findByUserIdAndCheckInAndCheckOut(userDto.getUserId(), reservationDates.getCheckIn(), reservationDates.getCheckOut())
                 .orElseThrow(() -> {
-                    log.info("No reservation found for userId: {}, between those dates:{} - {}", userId, reservationDates.getCheckIn(), reservationDates.getCheckOut());
+                    log.info("No reservation found for user: {}, between those dates:{} - {}", userEmail, reservationDates.getCheckIn(), reservationDates.getCheckOut());
                     return new RuntimeException("No reservation found for this user, between those dates");
                 });
 
         //CHECK SERVICE DOESN'T EXIST ALREADY IN RESERVATION
         List<Long> reservationServices = reservation.getServiceIds();
         if (reservationServices.contains(serviceId)) {
-            log.info("Service with ID: {} is already added to the reservation for userId: {}", serviceId, userId);
+            log.info("Service with ID: {} is already added to the reservation for user: {}", serviceId, userEmail);
             throw new IllegalArgumentException("Service with ID " + serviceId + " is already added to the reservation.");
         }
         //ADD SERVICEID TO RESERVATION
@@ -118,12 +122,9 @@ public class ReservationServiceImpl implements ReservationService {
             userHotelServices.add(serviceDto);
         }
 
-        //GET DTO'S, TO HAVE ALL DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
+        //GET RoomDto, TO HAVE DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
         RoomDto roomDto = getRoomResponseApi(reservation.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
-
-        UserDto userDto = getUserResponseApi(userId, token);
-        log.info("Fetched UserDto: {}", userDto);
 
         //UPDATE RESERVATION WITH NEW SERVICE AND WITH NEW TOTAL PRICE OF RESERVATION
         reservation.setServiceIds(reservationServices);
@@ -139,7 +140,7 @@ public class ReservationServiceImpl implements ReservationService {
         apiResponseDto.setRoom(roomDto);
         apiResponseDto.setHotelServices(userHotelServices);
 
-        log.info("Completed adding serviceId: {} to reservation for userId: {}", serviceId, userId);
+        log.info("Completed adding serviceId: {} to reservation for user: {}", serviceId, userEmail);
         return apiResponseDto;
     }
 
@@ -234,6 +235,22 @@ public class ReservationServiceImpl implements ReservationService {
         WebClient securedWebClient = webClientBuilder.build();
         UserDto userDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/users/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
+                .retrieve()
+                .bodyToMono(UserDto.class)
+                .block();
+
+        log.info("Fetched UserDto: {}", userDto);
+        return userDto;
+    }
+
+    private UserDto getUserByEmailResponseApi(String userEmail, String token) {
+        log.info("Fetching UserDto for userEmail: {}", userEmail);
+
+//        WebClient webClient = webClientBuilder.build();
+        WebClient securedWebClient = webClientBuilder.build();
+        UserDto userDto = securedWebClient.get()
+                .uri("http://localhost:9191/api/users/getUserByEmail/" + userEmail)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(UserDto.class)

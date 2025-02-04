@@ -2,6 +2,7 @@ package hotel.reservation_service.controller;
 
 import hotel.reservation_service.dto.APIResponseDto;
 import hotel.reservation_service.dto.ReservationDatesRequestDto;
+import hotel.reservation_service.security.JwtUtil;
 import hotel.reservation_service.service.ReservationService;
 import hotel.reservation_service.service.impl.ReservationServiceImpl;
 import org.slf4j.Logger;
@@ -21,9 +22,11 @@ public class ReservationController {
     @Autowired
     ReservationService reservationService;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     @PostMapping
-    public ResponseEntity<APIResponseDto> saveReservation(@RequestParam Long userId,
-                                                          @RequestParam Long roomId,
+    public ResponseEntity<APIResponseDto> saveReservation(@RequestParam Long roomId,
                                                           @RequestHeader HttpHeaders headers,
                                                           @RequestBody ReservationDatesRequestDto reservationDates) {
         // Extract the Authorization header
@@ -35,14 +38,16 @@ public class ReservationController {
         // Extract the token by removing the "Bearer " prefix
         String token = authorizationHeader.substring(7);
 
+        // Extract the userId from token
+        String userEmail = jwtUtil.extractEmail(token);
+
         log.info("Extracted Authorization token: {}", token);
-        APIResponseDto apiResponseDto = reservationService.saveReservation(userId, roomId, token, reservationDates);
+        APIResponseDto apiResponseDto = reservationService.saveReservation(userEmail, roomId, token, reservationDates);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/addHotelService")
-    public ResponseEntity<APIResponseDto> addServiceToReservation(@RequestParam Long userId,
-                                                                  @RequestParam Long serviceId,
+    public ResponseEntity<APIResponseDto> addServiceToReservation(@RequestParam Long serviceId,
                                                                   @RequestHeader HttpHeaders headers,
                                                                   @RequestBody ReservationDatesRequestDto reservationDates){
         // Extract the Authorization header
@@ -54,9 +59,12 @@ public class ReservationController {
         // Extract the token by removing the "Bearer " prefix
         String token = authorizationHeader.substring(7);
 
+        // Extract the userId from token
+        String userEmail = jwtUtil.extractEmail(token);
+
         log.info("Extracted Authorization token: {}", token);
 
-        APIResponseDto apiResponseDto = reservationService.addServiceToReservationByDate(userId, serviceId, reservationDates, token);
+        APIResponseDto apiResponseDto = reservationService.addServiceToReservationByDate(userEmail, serviceId, reservationDates, token);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 
