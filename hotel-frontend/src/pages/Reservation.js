@@ -2,8 +2,60 @@ import React, {useState} from "react";
 import App from "../App";
 import {Link, useParams} from "react-router-dom";
 import hotelLogo from "../assets/images/hotels.png";
+import axios from "axios";
 
 const Reservation = () => {
+    const {roomId} = useParams(); // Get roomId from the URL
+
+    const [reservationDates, setReservationDates] = useState({
+        checkIn: '',
+        checkOut: ''
+    });
+
+    const handleChange = (e) => {
+        setReservationDates({
+            ...reservationDates,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const formatDate = (dateString) => {
+        const [year, month, day] = dateString.split('-'); // Split the ISO date
+        return `${day}/${month}/${year}`; // Convert to DD/MM/YYYY
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const token = localStorage.getItem('jwtToken'); // Get JWT from localStorage
+
+            // Format the dates before sending to the backend
+            const formattedCheckIn = formatDate(reservationDates.checkIn);
+            const formattedCheckOut = formatDate(reservationDates.checkOut);
+
+            const response = await axios.post(
+                `http://localhost:9191/api/reservations?roomId=${roomId}`
+                ,
+                {
+                    checkIn: formattedCheckIn,
+                    checkOut: formattedCheckOut
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log('Reservation successful:', response.data);
+            alert('Reservation successful!');
+        }catch(error) {
+            console.error('Error creating reservation:', error);
+            alert('Error creating reservation. Please try again.');
+        }
+    };
 
     return (
         <div>
@@ -79,17 +131,8 @@ const Reservation = () => {
                             <div className="form-right-inf">
                                 <div className="booking-form-content">
                                     <h6>Book Now</h6>
-                                    <form action="#" className="book-depature-6 signin-form" method="post">
+                                    <form onSubmit={handleSubmit} className="book-depature-6 signin-form" method="post">
                                         <div className="d-grid grid-col-2">
-                                            {/*<div className="hny-frm_grid">*/}
-                                            {/*    <h5>Name</h5>*/}
-                                            {/*    <input className="name" name="Text" type="text" placeholder="Your Name"*/}
-                                            {/*           required=""/>*/}
-                                            {/*</div>*/}
-                                            {/*<div className="hny-frm_grid">*/}
-                                            {/*    <h5>Phone Number</h5>*/}
-                                            {/*    <input className="phone" name="Text" type="phone"*/}
-                                            {/*           placeholder="Phone Number" required=""/>*/}
                                             {/*</div>*/}
                                             <div className="hny-frm_grid">
                                                 <h5>Check-in Date</h5>
@@ -99,8 +142,8 @@ const Reservation = () => {
                                                     type="date"
                                                     placeholder="Date"
                                                     required
-                                                    // value = {reservationDates.checkIn}
-                                                    // onChange={handleChange}
+                                                    value = {reservationDates.checkIn}
+                                                    onChange={handleChange}
                                                 />
                                             </div>
                                             <div className="hny-frm_grid">
@@ -111,38 +154,13 @@ const Reservation = () => {
                                                     type="date"
                                                     placeholder="Date"
                                                     required
-                                                    // value = {reservationDates.checkOut}
-                                                    // onChange={handleChange}
+                                                    value = {reservationDates.checkOut}
+                                                    onChange={handleChange}
                                                 />
                                             </div>
-                                        {/*</div>*/}
-                                        {/*<div className="d-grid grid-col-2 mt-3">*/}
-                                        {/*    <div className="hny-frm_grid">*/}
-                                        {/*        <h5>Adults</h5>*/}
-                                        {/*        <select id="category1" name="category1" required="">*/}
-                                        {/*            <option value="category1">01</option>*/}
-                                        {/*            <option value="category2">02</option>*/}
-                                        {/*            <option value="category3">03</option>*/}
-                                        {/*            <option value="category4">04</option>*/}
-                                        {/*            <option value="category2">05</option>*/}
-                                        {/*            <option value="category3">06</option>*/}
-                                        {/*        </select>*/}
-                                        {/*    </div>*/}
-                                        {/*    <div className="hny-frm_grid">*/}
-                                        {/*        <h5>Children</h5>*/}
-                                        {/*        <select id="category1" name="category1" required="">*/}
-                                        {/*            <option value="category1">01</option>*/}
-                                        {/*            <option value="category2">02</option>*/}
-                                        {/*            <option value="category3">03</option>*/}
-                                        {/*            <option value="category4">04</option>*/}
-                                        {/*            <option value="category2">05</option>*/}
-                                        {/*            <option value="category3">06</option>*/}
-                                        {/*        </select>*/}
-                                        {/*    </div>*/}
                                         </div>
                                         <button className="btn btn-style btn-secondary book mt-3">Book Now</button>
                                         <p className="already">You are booking as guest.</p>
-
                                     </form>
                                 </div>
                             </div>
