@@ -19,6 +19,15 @@ const Login = () => {
             const token = response.data.token; // Ensure backend returns the token as `token`
             localStorage.setItem("jwtToken", token);
 
+            console.log(token);
+            const loggedUser = await axios.get("http://localhost:9191/api/users/getUserFromToken",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+            console.log(loggedUser);
             // Redirect to another page after successful login
             navigate("/");
         } catch (err) {
