@@ -15,10 +15,10 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtTokenValidationFilter jwtTokenValidationFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    public SecurityConfig(JwtTokenValidationFilter jwtTokenValidationFilter) {
+        this.jwtTokenValidationFilter = jwtTokenValidationFilter;
     }
 
     @Bean
@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/users/**").authenticated() // Protect specific endpoints
                         .anyExchange().permitAll() // Allow all other requests
                 )
-                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION) // Add JWT filter
+                .addFilterAt(jwtTokenValidationFilter, SecurityWebFiltersOrder.AUTHENTICATION) // Add JWT filter
                 .build();
     }
 }

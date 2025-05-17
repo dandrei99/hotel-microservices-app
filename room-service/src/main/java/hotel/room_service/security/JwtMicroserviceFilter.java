@@ -1,6 +1,5 @@
-package hotel.reservation_service.config;
+package hotel.room_service.security;
 
-import hotel.reservation_service.service.impl.ReservationServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,9 +16,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtMicroserviceFilter extends OncePerRequestFilter {
 
-    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(JwtMicroserviceFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -32,9 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Assume the token is valid since API Gateway validated it
             Authentication authentication = new UsernamePasswordAuthenticationToken(null, token, null);
-            if (authentication != null) {
-                log.info("Token in SecurityContext: {}", authentication.getCredentials());
-            }
+            log.info("Token in SecurityContext: {}", authentication.getCredentials());
 
             // Set the authentication into the SecurityContext
             log.info("Setting Authentication in SecurityContext: {}", authentication);

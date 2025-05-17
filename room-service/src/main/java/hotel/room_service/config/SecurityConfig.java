@@ -1,6 +1,6 @@
 package hotel.room_service.config;
 
-import hotel.room_service.security.JwtAuthenticationFilter;
+import hotel.room_service.security.JwtMicroserviceFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,10 +11,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtMicroserviceFilter jwtMicroserviceFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    public SecurityConfig(JwtMicroserviceFilter jwtMicroserviceFilter) {
+        this.jwtMicroserviceFilter = jwtMicroserviceFilter;
     }
 
     @Bean
@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .anyRequest().authenticated() // Require authentication for all requests
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add the JWT filter
+                .addFilterBefore(jwtMicroserviceFilter, UsernamePasswordAuthenticationFilter.class); // Add the JWT filter
 
         return http.build();
     }

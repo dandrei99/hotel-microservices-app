@@ -32,19 +32,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Validate the token
-    public boolean validate(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token); // Parse and validate the token
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     // Extract email (subject) from the token
     public String extractEmail(String token) {
         return Jwts.parserBuilder()
@@ -55,13 +42,4 @@ public class JwtUtil {
                 .getSubject(); // Retrieve the subject (email)
     }
 
-    // Extract role from the token
-    public String extractRole(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("role", String.class); // Retrieve the "role" claim
-    }
 }
