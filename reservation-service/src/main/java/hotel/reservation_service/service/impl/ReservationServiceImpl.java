@@ -5,10 +5,10 @@ import hotel.reservation_service.entity.Reservation;
 import hotel.reservation_service.mapper.ReservationMapper;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.ReservationService;
+import hotel.reservation_service.service.RoomClientService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,22 +28,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final WebClient.Builder webClientBuilder;
 
-    @Qualifier("unsecuredWebClientBuilder")
-    private final WebClient.Builder unsecuredWebClientBuilder;
-
-//    private WebClient webClient;
-//
-//    @PostConstruct
-//    public void initWebClient() {
-//        this.webClient = webClientBuilder.build();
-//        log.info("Initialized WebClient: {}", webClient);
-//    }
+    private final RoomClientService roomClientService;
 
     @Override
     public APIResponseDto saveReservation(String userEmail, Long roomId, String token, ReservationDatesRequestDto reservationDates) {
         log.info("Starting to create reservation for user: {} and roomId: {}", userEmail, roomId);
-
-        WebClient webClient = webClientBuilder.build();
 
         if(!isRoomAvailable(roomId,reservationDates.getCheckIn(),reservationDates.getCheckOut())){
             throw new RuntimeException("Room is not available in the selected time period");
@@ -158,7 +146,9 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
 
         //RoomDto
-        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
+//        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
+        //call using Resilience4j
+        RoomDto roomDto = roomClientService.getRoom(reservationDto.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
         //UserDto
@@ -231,7 +221,6 @@ public class ReservationServiceImpl implements ReservationService {
     private UserDto getUserResponseApi(Long userId, String token) {
         log.info("Fetching UserDto for userId: {}", userId);
 
-//        WebClient webClient = webClientBuilder.build();
         WebClient securedWebClient = webClientBuilder.build();
         UserDto userDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/users/" + userId)
@@ -247,7 +236,6 @@ public class ReservationServiceImpl implements ReservationService {
     private UserDto getUserByEmailResponseApi(String userEmail, String token) {
         log.info("Fetching UserDto for userEmail: {}", userEmail);
 
-//        WebClient webClient = webClientBuilder.build();
         WebClient securedWebClient = webClientBuilder.build();
         UserDto userDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/users/getUserByEmail/" + userEmail)
@@ -263,7 +251,6 @@ public class ReservationServiceImpl implements ReservationService {
     private RoomDto getRoomResponseApi(Long roomId, String token) {
         log.info("Fetching RoomDto for roomId: {}", roomId);
 
-//        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
         WebClient securedWebClient = webClientBuilder.build();
         RoomDto roomDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/rooms/" + roomId)
@@ -277,7 +264,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     private HotelServiceDto getHotelServiceResponseApi(Long serviceId, String token) {
 
-//        WebClient unsecuredWebClient = unsecuredWebClientBuilder.build();
         WebClient securedWebClient = webClientBuilder.build();
         HotelServiceDto serviceDto = securedWebClient.get()
                 .uri("http://localhost:9191/api/services/" + serviceId)
@@ -288,5 +274,4 @@ public class ReservationServiceImpl implements ReservationService {
 
         return serviceDto;
     }
-
 }
