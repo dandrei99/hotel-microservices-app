@@ -27,8 +27,6 @@ public class JwtTokenPropagationFilter implements WebFilter {
             logger.info("Extracted token: {}", token);
 
             try {
-
-
                 // Create a new ServerHttpRequestDecorator with updated headers
                 ServerHttpRequest mutatedRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
                     @Override

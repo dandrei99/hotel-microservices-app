@@ -26,12 +26,6 @@ public class WebClientConfig {
                 .filter(propagateAuthorizationHeader()); // Add filter for token propagation
     }
 
-    @Bean
-    @Qualifier("unsecuredWebClientBuilder")
-    public WebClient.Builder unsecuredWebClientBuilder() {
-        return WebClient.builder();
-    }
-
     private ExchangeFilterFunction propagateAuthorizationHeader() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
             log.info("Propagating Authorization Header...");
@@ -50,8 +44,6 @@ public class WebClientConfig {
                     .defaultIfEmpty(clientRequest); // Return the original clientRequest if no security context is available
         });
     }
-
-
 
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {

@@ -30,7 +30,10 @@ public class SecurityConfig {
                 .authorizeExchange(auth -> auth
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .pathMatchers("/api/auth/login").permitAll() // Allow login endpoint
-                        .pathMatchers("/api/users/**").authenticated() // Protect specific endpoints
+                        .pathMatchers("/api/users/**").authenticated()
+                        .pathMatchers("/api/rooms/**").authenticated()
+                        .pathMatchers("/api/services/**").authenticated()
+                        .pathMatchers("/api/reservations/**").authenticated()
                         .anyExchange().permitAll() // Allow all other requests
                 )
                 .addFilterAt(jwtTokenValidationFilter, SecurityWebFiltersOrder.AUTHENTICATION) // Add JWT filter
