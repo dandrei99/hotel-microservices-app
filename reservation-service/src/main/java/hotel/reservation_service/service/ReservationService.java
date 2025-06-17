@@ -10,4 +10,6 @@ public interface ReservationService {
     APIResponseDto addServiceToReservationByDate(String userEmail, Long serviceId, String token);
 
     APIResponseDto getReservation(String userEmail, String token);
+
+    APIResponseDto removeServiceFromReservation(String userEmail, Long serviceId, String token);
 }

@@ -87,4 +87,25 @@ public class ReservationController {
         APIResponseDto apiResponseDto = reservationService.getReservation(userEmail, token);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/removeHotelService")
+    public ResponseEntity<APIResponseDto> removeServiceFromReservation(@RequestParam Long serviceId,
+                                                                       @RequestHeader HttpHeaders headers){
+        // Extract the Authorization header
+        String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Missing or invalid Authorization header");
+        }
+
+        // Extract the token by removing the "Bearer " prefix
+        String token = authorizationHeader.substring(7);
+
+        // Extract the userId from token
+        String userEmail = jwtUtil.extractEmail(token);
+
+        log.info("Extracted Authorization token: {}", token);
+
+        APIResponseDto apiResponseDto = reservationService.removeServiceFromReservation(userEmail, serviceId, token);
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
+    }
 }

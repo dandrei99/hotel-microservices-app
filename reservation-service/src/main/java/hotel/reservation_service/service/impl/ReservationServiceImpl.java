@@ -180,6 +180,61 @@ public class ReservationServiceImpl implements ReservationService {
         return apiResponseDto;
     }
 
+    @Override
+    public APIResponseDto removeServiceFromReservation(String userEmail, Long serviceId, String token) {
+        log.info("Removing serviceId: {} from reservation for user: {}", serviceId, userEmail);
+
+        UserDto userDto = getUserByEmailResponseApi(userEmail, token);
+        log.info("Fetched UserDto: {}", userDto);
+
+        //Check User has reservation
+        Reservation reservation = reservationRepository.findByUserId(userDto.getUserId())
+                .orElseThrow(() -> {
+                    log.info("No reservation found for user: {}", userEmail);
+                    return new RuntimeException("No reservation found for this user");
+                });
+
+        //CHECK SERVICE EXISTS IN RESERVATION
+        List<Long> reservationServices = reservation.getServiceIds();
+        if (!reservationServices.contains(serviceId)) {
+            log.info("Service with ID: {} is not on reservation of user: {}", serviceId, userEmail);
+            throw new IllegalArgumentException("Service with ID " + serviceId + " is not on reservation.");
+        }
+        //REMOVE SERVICE FROM RESERVATION
+        reservationServices.remove(serviceId);
+
+        //POPULATE userHotelServices
+        List<HotelServiceDto> userHotelServices = new ArrayList<>();
+
+        for (int i = 0; i < reservationServices.size(); i++) {
+
+            HotelServiceDto serviceDto = getHotelServiceResponseApi(reservationServices.get(i), token);
+            log.info("Fetched HotelServiceDto: {}", serviceDto);
+            userHotelServices.add(serviceDto);
+        }
+
+        //GET RoomDto, TO HAVE DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
+        RoomDto roomDto = getRoomResponseApi(reservation.getRoomId(), token);
+        log.info("Fetched RoomDto: {}", roomDto);
+
+        //UPDATE RESERVATION WITH NEW SERVICE LIST AND WITH NEW TOTAL PRICE OF RESERVATION
+        reservation.setServiceIds(reservationServices);
+        reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(), reservation.getCheckIn(), reservation.getCheckOut(), userHotelServices));
+        Reservation updatedReservation = reservationRepository.save(reservation);
+
+        ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
+
+        //create the API Response
+        APIResponseDto apiResponseDto = new APIResponseDto();
+        apiResponseDto.setReservation(reservationDto);
+        apiResponseDto.setUser(userDto);
+        apiResponseDto.setRoom(roomDto);
+        apiResponseDto.setHotelServices(userHotelServices);
+
+        log.info("Completed adding serviceId: {} to reservation for user: {}", serviceId, userEmail);
+        return apiResponseDto;
+    }
+
     public boolean isRoomAvailable(Long roomId,  LocalDate newCheckIn, LocalDate newCheckOut){
         List<Reservation> RoomReservations = reservationRepository.findByRoomId(roomId);
 
