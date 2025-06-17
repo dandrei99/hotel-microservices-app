@@ -48,8 +48,7 @@ public class ReservationController {
 
     @PutMapping("/addHotelService")
     public ResponseEntity<APIResponseDto> addServiceToReservation(@RequestParam Long serviceId,
-                                                                  @RequestHeader HttpHeaders headers,
-                                                                  @RequestBody ReservationDatesRequestDto reservationDates){
+                                                                  @RequestHeader HttpHeaders headers){
         // Extract the Authorization header
         String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -64,7 +63,7 @@ public class ReservationController {
 
         log.info("Extracted Authorization token: {}", token);
 
-        APIResponseDto apiResponseDto = reservationService.addServiceToReservationByDate(userEmail, serviceId, reservationDates, token);
+        APIResponseDto apiResponseDto = reservationService.addServiceToReservationByDate(userEmail, serviceId, token);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 

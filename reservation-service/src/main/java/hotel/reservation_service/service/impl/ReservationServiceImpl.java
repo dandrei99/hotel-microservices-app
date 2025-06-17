@@ -83,17 +83,17 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public APIResponseDto addServiceToReservationByDate(String userEmail, Long serviceId, ReservationDatesRequestDto reservationDates, String token) {
+    public APIResponseDto addServiceToReservationByDate(String userEmail, Long serviceId, String token) {
         log.info("Adding serviceId: {} to reservation for user: {}", serviceId, userEmail);
 
         UserDto userDto = getUserByEmailResponseApi(userEmail, token);
         log.info("Fetched UserDto: {}", userDto);
 
-        //CHECK RESERVATION EXISTS FOR USER BETWEEN THOSE DATES
-        Reservation reservation = reservationRepository.findByUserIdAndCheckInAndCheckOut(userDto.getUserId(), reservationDates.getCheckIn(), reservationDates.getCheckOut())
+        //Check User has reservation
+        Reservation reservation = reservationRepository.findByUserId(userDto.getUserId())
                 .orElseThrow(() -> {
-                    log.info("No reservation found for user: {}, between those dates:{} - {}", userEmail, reservationDates.getCheckIn(), reservationDates.getCheckOut());
-                    return new RuntimeException("No reservation found for this user, between those dates");
+                    log.info("No reservation found for user: {}", userEmail);
+                    return new RuntimeException("No reservation found for this user");
                 });
 
         //CHECK SERVICE DOESN'T EXIST ALREADY IN RESERVATION
@@ -121,7 +121,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         //UPDATE RESERVATION WITH NEW SERVICE AND WITH NEW TOTAL PRICE OF RESERVATION
         reservation.setServiceIds(reservationServices);
-        reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(), reservationDates.getCheckIn(), reservationDates.getCheckOut(), userHotelServices));
+        reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(), reservation.getCheckIn(), reservation.getCheckOut(), userHotelServices));
         Reservation updatedReservation = reservationRepository.save(reservation);
 
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
