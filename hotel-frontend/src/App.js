@@ -7,6 +7,8 @@ import Rooms from './pages/Rooms';
 import RoomView from './pages/RoomView';
 import Login from "./pages/Login";
 import Reservation from './pages/Reservation';
+import MyReservation from './pages/MyReservation';
+
 
 function App() {
     return (
@@ -18,6 +20,7 @@ function App() {
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/rooms/:roomId" element={<RoomView />} />
                 <Route path="/reservation/:roomId" element={<Reservation />} />
+                <Route path="/myreservation" element={<MyReservation />} />
             </Routes>
         </Router>
     );
