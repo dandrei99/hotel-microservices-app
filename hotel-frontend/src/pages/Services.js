@@ -28,6 +28,36 @@ const Services = () => {
             });
     }, []);
 
+
+    const handleAddService = async (serviceId) => {
+        const token = localStorage.getItem('jwtToken');
+
+        try {
+            const response = await axios.put(
+                `http://localhost:9191/api/reservations/addHotelService?serviceId=${serviceId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
+            );
+
+            console.log('Service added to reservation:', response.data);
+            const addedService = response.data.hotelServices.at(-1); // get the last added service
+            console.log('Last added service: ',addedService);
+            const serviceName = addedService?.serviceName || 'Unknown service';
+            alert(`Service "${serviceName}" added successfully to reservation.`);
+        } catch (error) {
+            console.error('Error adding service to reservation:', error);
+            if (error.response?.data?.message) {
+                alert(`Error: ${error.response.data.message}`);
+            } else {
+                alert('Failed to add service to reservation.');
+            }
+        }
+    };
+
     return (
         <div>
 
@@ -124,6 +154,12 @@ const Services = () => {
                                                     {/*<h5>{service.serviceName}</h5>*/}
                                                     <h6>${service.price}</h6>
                                                     <p>{service.description}</p>
+                                                    <button
+                                                        className="btn btn-secondary mt-2"
+                                                        onClick={() => handleAddService(service.serviceId)}
+                                                    >
+                                                        Add to Reservation
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
