@@ -9,5 +9,5 @@ public interface ReservationService {
 
     APIResponseDto addServiceToReservationByDate(String userEmail, Long serviceId,ReservationDatesRequestDto reservationDates, String token);
 
-    APIResponseDto getReservation(Long userId, String token);
+    APIResponseDto getReservation(String userEmail, String token);
 }

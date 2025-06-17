@@ -40,6 +40,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         UserDto userDto = getUserByEmailResponseApi(userEmail, token);
         log.info("Fetched UserDto: {}", userDto);
+        boolean hasReservation =  reservationRepository.findByUserId(userDto.getUserId()).isPresent();
+        if(hasReservation){
+            log.info("User {} already has a reservation on room {}", userEmail, reservationRepository.findByUserId(userDto.getUserId()).get().getRoomId());
+            throw new RuntimeException("User already has a reservation");
+        }
         RoomDto roomDto = getRoomResponseApi(roomId, token);
         log.info("Fetched RoomDto: {}",    roomDto);
 
@@ -133,17 +138,19 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public APIResponseDto getReservation(Long userId, String token) {
-        log.info("Fetching reservation for userId: {}", userId);
+    public APIResponseDto getReservation(String userEmail, String token) {
+        log.info("Fetching reservation for user: {}", userEmail);
+
+        UserDto userDto = getUserByEmailResponseApi(userEmail, token);
 
         //ReservationDto
-        Reservation reservation = reservationRepository.findByUserId(userId)
+        Reservation reservation = reservationRepository.findByUserId(userDto.getUserId())
                 .orElseThrow(() -> {
-                    log.info("No reservation found for userId: {}", userId);
+                    log.info("No reservation found for user: {}", userEmail);
                     return new RuntimeException("No reservation found for this user");
                 });
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(reservation);
-        log.info("User with Id: {} has the following reservation: {}", userId, reservationDto);
+        log.info("User with Id: {} has the following reservation: {}", userEmail, reservationDto);
 
         //RoomDto
 //        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
@@ -151,9 +158,6 @@ public class ReservationServiceImpl implements ReservationService {
         RoomDto roomDto = roomClientService.getRoom(reservationDto.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
-        //UserDto
-        UserDto userDto = getUserResponseApi(userId, token);
-        log.info("Fetched UserDto: {}", userDto);
 
         //HotelServiceDto
         List<HotelServiceDto> userHotelServices = new ArrayList<>();
@@ -172,7 +176,7 @@ public class ReservationServiceImpl implements ReservationService {
         apiResponseDto.setRoom(roomDto);
         apiResponseDto.setHotelServices(userHotelServices);
 
-        log.info("Completed getting reservation details for userId: {}", userId);
+        log.info("Completed getting reservation details for user: {}", userEmail);
         return apiResponseDto;
     }
 

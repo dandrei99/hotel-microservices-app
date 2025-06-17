@@ -68,8 +68,8 @@ public class ReservationController {
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<APIResponseDto> getReservation(@PathVariable ("userId") Long userId, @RequestHeader HttpHeaders headers){
+    @GetMapping
+    public ResponseEntity<APIResponseDto> getReservation(@RequestHeader HttpHeaders headers){
         log.info("Headers received: {}", headers);
         // Extract the Authorization header
         String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
@@ -80,9 +80,12 @@ public class ReservationController {
         // Extract the token by removing the "Bearer " prefix
         String token = authorizationHeader.substring(7);
 
+        // Extract the userId from token
+        String userEmail = jwtUtil.extractEmail(token);
+
         log.info("Extracted Authorization token: {}", token);
 
-        APIResponseDto apiResponseDto = reservationService.getReservation(userId, token);
+        APIResponseDto apiResponseDto = reservationService.getReservation(userEmail, token);
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 }
