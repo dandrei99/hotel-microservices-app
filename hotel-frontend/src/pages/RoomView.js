@@ -2,6 +2,13 @@ import React, {useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import hotelLogo from "../assets/images/hotels.png";
+import slide1 from "../assets/images/slide1.jpg";
+import slide4 from "../assets/images/slide4.jpg";
+import slide2 from "../assets/images/slide2.jpg";
+import slide3 from "../assets/images/slide3.jpg";
+import rs1 from "../assets/images/rs1.jpg";
+import rs2 from "../assets/images/rs2.jpg";
+import facilities from "../assets/images/facilities.jpg";
 
 const RoomView = () => {
     const { roomId } = useParams(); // Extract roomId from URL
@@ -29,6 +36,8 @@ const RoomView = () => {
     if (!room) {
         return <div>Loading room details...</div>;
     }
+
+    const roomImages = [slide1, slide4, slide2, slide3, rs1, rs2];
 
     return(
 
@@ -135,18 +144,11 @@ const RoomView = () => {
                                     <input type="radio" name="slides" id="slides_3"/>
                                     <input type="radio" name="slides" id="slides_4"/>
                                     <ul className="banner_slide_bg">
-                                        <li>
-                                            <img className="img" src="assets/images/slide1.jpg" alt=""/>
-                                        </li>
-                                        <li>
-                                            <img className="img" src="assets/images/slide4.jpg" alt=""/>
-                                        </li>
-                                        <li>
-                                            <img className="img" src="assets/images/slide2.jpg" alt=""/>
-                                        </li>
-                                        <li>
-                                            <img className="img" src="assets/images/slide3.jpg" alt=""/>
-                                        </li>
+                                        {roomImages.slice(0, 4).map((image, index) => (
+                                            <li key={index}>
+                                                <img className="img" src={image} alt={`Room Slide ${index + 1}`}/>
+                                            </li>
+                                        ))}
                                     </ul>
                                     <div className="arrows">
                                         <label for="slides_1"></label>
@@ -174,10 +176,10 @@ const RoomView = () => {
                 <div className="container py-sm-4">
                     <div className="row">
                         <div className="col-lg-3 col-md-4 col-6">
-                            <img src="assets/images/rs1.jpg" alt="" className="img-fluid"/>
+                            <img src={roomImages[4]} alt="Room photo 1" className="img-fluid"/>
                         </div>
                         <div className="col-lg-3 col-md-4 col-6">
-                            <img src="assets/images/rs2.jpg" alt="" className="img-fluid"/>
+                            <img src={roomImages[5]} alt="Room photo 2" className="img-fluid"/>
                         </div>
                         <div className="col-lg-6 roomsingle mt-lg-0 mt-4">
                             <h3 className="title-small">The Room</h3>
@@ -195,7 +197,7 @@ const RoomView = () => {
             <section className="w3l-roomsingleblock1 py-5">
                 <div className="container py-sm-4">
                     <div className="row">
-                        <div className="col-lg-7 roomsingle">
+                    <div className="col-lg-7 roomsingle">
                             <h3 className="title-small">Amenities provided by our hotel</h3>
                             <ul className="w3l-right-book mt-4">
                                 <li><a hef="#url"><span className="fa fa-check" aria-hidden="true"></span>Flat screen TV</a>
@@ -223,7 +225,7 @@ const RoomView = () => {
                             </ul>
                         </div>
                         <div className="col-lg-5 mt-lg-0 mt-4">
-                            <img src="assets/images/facilities.jpg" alt="" className="img-fluid"/>
+                            <img src={facilities} alt="Hotel Facilities" className="img-fluid"/>
                         </div>
                     </div>
                 </div>
