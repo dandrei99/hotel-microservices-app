@@ -18,8 +18,9 @@ public class CorsConfig {
         config.addAllowedHeader("*"); // Allow all headers
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Register CORS configuration for the specific login endpoint
+        // Register CORS configuration for below endpoints
         source.registerCorsConfiguration("/api/auth/login", config);
+        source.registerCorsConfiguration("/api/users/create", config);
 
         return new CorsFilter(source);
     }
