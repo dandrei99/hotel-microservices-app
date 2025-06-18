@@ -141,6 +141,7 @@ const MyReservation = () => {
                                 <p><strong>Check-in:</strong> {resData.checkIn}</p>
                                 <p><strong>Check-out:</strong> {resData.checkOut}</p>
                                 <p><strong>Status:</strong> {resData.reservationStatus}</p>
+                                <p><strong>Guests:</strong> {room.maxOccupancy}</p>
                             </div>
                         </div>
                     </div>
@@ -152,8 +153,8 @@ const MyReservation = () => {
                             <div className="card-body p-0">
                                 <p><strong>Room Type:</strong> {room.roomType}</p>
                                 <p><strong>Description:</strong> {room.description}</p>
-                                <p><strong>Price per Night:</strong> <span
-                                    className="fw-bold">€{room.pricePerNight}</span></p>
+                                <p><strong>Facilities:</strong> Balcony, Mini Fridge, AC, TV, Wi-Fi</p>
+                                <p><strong>Price per Night:</strong> €{room.pricePerNight}</p>
                             </div>
                         </div>
                     </div>
