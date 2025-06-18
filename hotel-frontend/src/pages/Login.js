@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import '../assets/css/style-liberty.css';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -12,23 +13,19 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await axios.post("http://localhost:8080/api/auth/login", {
-                email, // Send email in the request body
+                email,
                 password,
             });
 
-            const token = response.data.token; // Ensure backend returns the token as `token`
+            const token = response.data.token;
             localStorage.setItem("jwtToken", token);
 
-            console.log(token);
-            const loggedUser = await axios.get("http://localhost:9191/api/users/getUserFromToken",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+            const loggedUser = await axios.get("http://localhost:9191/api/users/getUserFromToken", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-            console.log(loggedUser);
-            // Redirect to another page after successful login
             navigate("/");
         } catch (err) {
             setError("Invalid email or password. Please try again.");
@@ -36,30 +33,38 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <button type="submit">Login</button>
-            </form>
+        <div className="login-page">
+            <div className="login-card">
+                <h2>Login</h2>
+                <form onSubmit={handleLogin}>
+                    <div className="form-group">
+                        <label>Email:</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Password:</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    {error && <p className="error-text">{error}</p>}
+                    <button type="submit" className="login-button">Login</button>
+                </form>
+
+                {/*Register button*/}
+                <p style={{ marginTop: "15px" }}>
+                    Don't have an account?{" "}
+                    <Link to="/register" className="register-link">Create one</Link>
+                </p>
+            </div>
         </div>
     );
 };
