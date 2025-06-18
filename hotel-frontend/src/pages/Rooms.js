@@ -54,40 +54,26 @@ const Rooms = () => {
 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav ml-auto">
-                                <li className="nav-item @@home__active">
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/">Home</Link>
                                 </li>
-                                <li className="nav-item @@about__active">
-                                    <a className="nav-link" href="about.html">About</a>
-                                </li>
-                                <li className="nav-item active">
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/services">Services</Link>
                                 </li>
-                                <li className="nav-item dropdown @@room__active">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Rooms <span className="fa fa-angle-down"></span>
-                                    </a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <Link className="dropdown-item" to="/rooms">Rooms</Link>
-                                        <a className="dropdown-item" href="room-single.html">Room Single</a>
-                                    </div>
+                                <li className="nav-item ">
+                                    <Link className="nav-link" to="/rooms">Rooms</Link>
                                 </li>
-                                <li className="nav-item dropdown @@blog__active">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Blog <span className="fa fa-angle-down"></span>
-                                    </a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a className="dropdown-item" href="blog.html">Blog</a>
-                                        <a className="dropdown-item" href="blog-single.html">Blog Single</a>
-                                    </div>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/myreservation">MyReservation</Link>
                                 </li>
-                                <li className="nav-item @@contact__active">
+                                <li className="nav-item">
                                     <a className="nav-link" href="contact.html">Contact</a>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">Login</Link>
+                                </li>
                             </ul>
-                            <a href="booking.html" className="ml-3 book btn btn-secondary btn-style">Book Now</a>
+                            <Link className="ml-3 book btn btn-secondary btn-style" to="/rooms">Book Now</Link>
                         </div>
                     </div>
                 </nav>
@@ -155,260 +141,6 @@ const Rooms = () => {
                                 </div>
                             </div>
                         ))}
-
-
-                        {/*            <div className="maghny-gd-1 col-lg-4 col-md-6">*/}
-                        {/*                <div className="maghny-grid">*/}
-                        {/*                    <figure className="effect-lily">*/}
-                        {/*                        <img className="img-fluid" src={about1} alt=""/>*/}
-                        {/*                        <figcaption>*/}
-                        {/*                            <div>*/}
-                        {/*                                <h4 className="top-text">Luxury Hotel room*/}
-                        {/*                                    <ul>*/}
-                        {/*                                        <li><span className="fa fa-star"></span></li>*/}
-                        {/*                                        <li><span className="fa fa-star"></span></li>*/}
-                        {/*                                        <li><span className="fa fa-star"></span></li>*/}
-                        {/*                                        <li><span className="fa fa-star"></span></li>*/}
-                        {/*                                        <li><span className="fa fa-star-o"></span></li>*/}
-                        {/*                                    </ul>*/}
-                        {/*                                </h4>*/}
-                        {/*                                <p>Book for 20$ </p>*/}
-                        {/*                            </div>*/}
-                        {/*                        </figcaption>*/}
-                        {/*                    </figure>*/}
-                        {/*                    <div className="room-info">*/}
-                        {/*                        <h3 className="room-title"><a href="#url">Luxury Hotel</a></h3>*/}
-                        {/*                        <ul className="mb-3">*/}
-                        {/*                            <li><span className="fa fa-users"></span> 2 Guests</li>*/}
-                        {/*                            <li><span className="fa fa-bed"></span> 15sqft</li>*/}
-                        {/*                        </ul>*/}
-                        {/*                        <p>Lorem ipsum dolor, sit amet elit. Omnis illum sequi, tenetur.</p>*/}
-                        {/*                        <a href="booking.html" className="btn mt-sm-4 mt-3">Book Now</a>*/}
-                        {/*                        <div className="room-info-bottom">*/}
-                        {/*                            <ul className="room-amenities">*/}
-                        {/*                                <li><a href="#url"><span className="fa fa-bed" title="Beds"></span></a></li>*/}
-                        {/*                                <li><a href="#url"><span className="fa fa-television"*/}
-                        {/*                                                         title="Television"></span></a></li>*/}
-                        {/*                                <li><a href="#url"><span className="fa fa-bath"*/}
-                        {/*                                                         title="Private Bathroom"></span></a></li>*/}
-                        {/*                                <li><a href="#url"><span className="fa fa-motorcycle"*/}
-                        {/*                                                         title="Bike Rental"></span></a></li>*/}
-                        {/*                            </ul>*/}
-            {/*                            <a href="room-single.html" className="btn view">Full Info →</a>*/}
-            {/*                        </div>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*            <div className="maghny-gd-1 col-lg-4 col-md-6 mt-md-0 mt-4">*/}
-            {/*                <div className="maghny-grid">*/}
-            {/*                    <figure className="effect-lily">*/}
-            {/*                        <img className="img-fluid" src={blog3} alt=""/>*/}
-            {/*                        <figcaption>*/}
-            {/*                            <div>*/}
-            {/*                                <h4 className="top-text">Luxury Hotel room*/}
-            {/*                                    <ul>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star-o"></span></li>*/}
-            {/*                                    </ul>*/}
-            {/*                                </h4>*/}
-            {/*                                <p>Book for 20$ </p>*/}
-            {/*                            </div>*/}
-            {/*                        </figcaption>*/}
-            {/*                    </figure>*/}
-            {/*                    <div className="room-info">*/}
-            {/*                        <h3 className="room-title"><a href="#url">Luxury Hotel</a></h3>*/}
-            {/*                        <ul className="mb-3">*/}
-            {/*                            <li><span className="fa fa-users"></span> 2 Guests</li>*/}
-            {/*                            <li><span className="fa fa-bed"></span> 15sqft</li>*/}
-            {/*                        </ul>*/}
-            {/*                        <p>Lorem ipsum dolor, sit amet elit. Omnis illum sequi, tenetur.</p>*/}
-            {/*                        <a href="booking.html" className="btn mt-sm-4 mt-3">Book Now</a>*/}
-            {/*                        <div className="room-info-bottom">*/}
-            {/*                            <ul className="room-amenities">*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bed" title="Beds"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-television"*/}
-            {/*                                                         title="Television"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bath"*/}
-            {/*                                                         title="Private Bathroom"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-motorcycle"*/}
-            {/*                                                         title="Bike Rental"></span></a></li>*/}
-            {/*                            </ul>*/}
-            {/*                            <a href="room-single.html" className="btn view">Full Info →</a>*/}
-            {/*                        </div>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*            <div className="maghny-gd-1 col-lg-4 col-md-6 mt-md-0 mt-4">*/}
-            {/*                <div className="maghny-grid">*/}
-            {/*                    <figure className="effect-lily">*/}
-            {/*                        <img className="img-fluid" src={about3} alt=""/>*/}
-            {/*                        <figcaption>*/}
-            {/*                            <div>*/}
-            {/*                                <h4 className="top-text">Luxury Hotel room*/}
-            {/*                                    <ul>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star-o"></span></li>*/}
-            {/*                                    </ul>*/}
-            {/*                                </h4>*/}
-            {/*                                <p>Book for 20$ </p>*/}
-            {/*                            </div>*/}
-            {/*                        </figcaption>*/}
-            {/*                    </figure>*/}
-            {/*                    <div className="room-info">*/}
-            {/*                        <h3 className="room-title"><a href="#url">Luxury Hotel</a></h3>*/}
-            {/*                        <ul className="mb-3">*/}
-            {/*                            <li><span className="fa fa-users"></span> 2 Guests</li>*/}
-            {/*                            <li><span className="fa fa-bed"></span> 15sqft</li>*/}
-            {/*                        </ul>*/}
-            {/*                        <p>Lorem ipsum dolor, sit amet elit. Omnis illum sequi, tenetur.</p>*/}
-            {/*                        <a href="booking.html" className="btn mt-sm-4 mt-3">Book Now</a>*/}
-            {/*                        <div className="room-info-bottom">*/}
-            {/*                            <ul className="room-amenities">*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bed" title="Beds"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-television"*/}
-            {/*                                                         title="Television"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bath"*/}
-            {/*                                                         title="Private Bathroom"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-motorcycle"*/}
-            {/*                                                         title="Bike Rental"></span></a></li>*/}
-            {/*                            </ul>*/}
-            {/*                            <a href="room-single.html" className="btn view">Full Info →</a>*/}
-            {/*                        </div>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*            <div className="maghny-gd-1 col-lg-4 col-md-6 mt-md-5 mt-4">*/}
-            {/*                <div className="maghny-grid">*/}
-            {/*                    <figure className="effect-lily">*/}
-            {/*                        <img className="img-fluid" src={blog1} alt=""/>*/}
-            {/*                        <figcaption>*/}
-            {/*                            <div>*/}
-            {/*                                <h4 className="top-text">Luxury Hotel room*/}
-            {/*                                    <ul>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star-o"></span></li>*/}
-            {/*                                    </ul>*/}
-            {/*                                </h4>*/}
-            {/*                                <p>Book for 20$ </p>*/}
-            {/*                            </div>*/}
-            {/*                        </figcaption>*/}
-            {/*                    </figure>*/}
-            {/*                    <div className="room-info">*/}
-            {/*                        <h3 className="room-title"><a href="#url">Luxury Hotel</a></h3>*/}
-            {/*                        <ul className="mb-3">*/}
-            {/*                            <li><span className="fa fa-users"></span> 2 Guests</li>*/}
-            {/*                            <li><span className="fa fa-bed"></span> 15sqft</li>*/}
-            {/*                        </ul>*/}
-            {/*                        <p>Lorem ipsum dolor, sit amet elit. Omnis illum sequi, tenetur.</p>*/}
-            {/*                        <a href="booking.html" className="btn mt-sm-4 mt-3">Book Now</a>*/}
-            {/*                        <div className="room-info-bottom">*/}
-            {/*                            <ul className="room-amenities">*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bed" title="Beds"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-television"*/}
-            {/*                                                         title="Television"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bath"*/}
-            {/*                                                         title="Private Bathroom"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-motorcycle"*/}
-            {/*                                                         title="Bike Rental"></span></a></li>*/}
-            {/*                            </ul>*/}
-            {/*                            <a href="room-single.html" className="btn view">Full Info →</a>*/}
-            {/*                        </div>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*            <div className="maghny-gd-1 col-lg-4 col-md-6 mt-5">*/}
-            {/*                <div className="maghny-grid">*/}
-            {/*                    <figure className="effect-lily">*/}
-            {/*                        <img className="img-fluid" src={blog2} alt=""/>*/}
-            {/*                        <figcaption>*/}
-            {/*                            <div>*/}
-            {/*                                <h4 className="top-text">Luxury Hotel room*/}
-            {/*                                    <ul>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star-o"></span></li>*/}
-            {/*                                    </ul>*/}
-            {/*                                </h4>*/}
-            {/*                                <p>Book for 20$ </p>*/}
-            {/*                            </div>*/}
-            {/*                        </figcaption>*/}
-            {/*                    </figure>*/}
-            {/*                    <div className="room-info">*/}
-            {/*                        <h3 className="room-title"><a href="#url">Luxury Hotel</a></h3>*/}
-            {/*                        <ul className="mb-3">*/}
-            {/*                            <li><span className="fa fa-users"></span> 2 Guests</li>*/}
-            {/*                            <li><span className="fa fa-bed"></span> 15sqft</li>*/}
-            {/*                        </ul>*/}
-            {/*                        <p>Lorem ipsum dolor, sit amet elit. Omnis illum sequi, tenetur.</p>*/}
-            {/*                        <a href="booking.html" className="btn mt-sm-4 mt-3">Book Now</a>*/}
-            {/*                        <div className="room-info-bottom">*/}
-            {/*                            <ul className="room-amenities">*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bed" title="Beds"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-television"*/}
-            {/*                                                         title="Television"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bath"*/}
-            {/*                                                         title="Private Bathroom"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-motorcycle"*/}
-            {/*                                                         title="Bike Rental"></span></a></li>*/}
-            {/*                            </ul>*/}
-            {/*                            <a href="room-single.html" className="btn view">Full Info →</a>*/}
-            {/*                        </div>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*            <div className="maghny-gd-1 col-lg-4 col-md-6 mt-5">*/}
-            {/*                <div className="maghny-grid">*/}
-            {/*                    <figure className="effect-lily">*/}
-            {/*                        <img className="img-fluid" src={about2} alt=""/>*/}
-            {/*                        <figcaption>*/}
-            {/*                            <div>*/}
-            {/*                                <h4 className="top-text">Luxury Hotel room*/}
-            {/*                                    <ul>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star"></span></li>*/}
-            {/*                                        <li><span className="fa fa-star-o"></span></li>*/}
-            {/*                                    </ul>*/}
-            {/*                                </h4>*/}
-            {/*                                <p>Book for 20$ </p>*/}
-            {/*                            </div>*/}
-            {/*                        </figcaption>*/}
-            {/*                    </figure>*/}
-            {/*                    <div className="room-info">*/}
-            {/*                        <h3 className="room-title"><a href="#url">Luxury Hotel</a></h3>*/}
-            {/*                        <ul className="mb-3">*/}
-            {/*                            <li><span className="fa fa-users"></span> 2 Guests</li>*/}
-            {/*                            <li><span className="fa fa-bed"></span> 15sqft</li>*/}
-            {/*                        </ul>*/}
-            {/*                        <p>Lorem ipsum dolor, sit amet elit. Omnis illum sequi, tenetur.</p>*/}
-            {/*                        <a href="booking.html" className="btn mt-sm-4 mt-3">Book Now</a>*/}
-            {/*                        <div className="room-info-bottom">*/}
-            {/*                            <ul className="room-amenities">*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bed" title="Beds"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-television"*/}
-            {/*                                                         title="Television"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-bath"*/}
-            {/*                                                         title="Private Bathroom"></span></a></li>*/}
-            {/*                                <li><a href="#url"><span className="fa fa-motorcycle"*/}
-            {/*                                                         title="Bike Rental"></span></a></li>*/}
-            {/*                            </ul>*/}
-            {/*                            <a href="room-single.html" className="btn view">Full Info →</a>*/}
-            {/*                        </div>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
                     </div>
                 </div>
             </div>

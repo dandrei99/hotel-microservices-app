@@ -93,40 +93,26 @@ const MyReservation = () => {
 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav ml-auto">
-                                <li className="nav-item @@home__active">
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/">Home</Link>
                                 </li>
-                                <li className="nav-item @@about__active">
-                                    <a className="nav-link" href="about.html">About</a>
-                                </li>
-                                <li className="nav-item active">
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/services">Services</Link>
                                 </li>
-                                <li className="nav-item dropdown @@room__active">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Rooms <span className="fa fa-angle-down"></span>
-                                    </a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <Link className="dropdown-item" to="/rooms">Rooms</Link>
-                                        <a className="dropdown-item" href="room-single.html">Room Single</a>
-                                    </div>
+                                <li className="nav-item ">
+                                    <Link className="nav-link" to="/rooms">Rooms</Link>
                                 </li>
-                                <li className="nav-item dropdown @@blog__active">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Blog <span className="fa fa-angle-down"></span>
-                                    </a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a className="dropdown-item" href="blog.html">Blog</a>
-                                        <a className="dropdown-item" href="blog-single.html">Blog Single</a>
-                                    </div>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/myreservation">MyReservation</Link>
                                 </li>
-                                <li className="nav-item @@contact__active">
+                                <li className="nav-item">
                                     <a className="nav-link" href="contact.html">Contact</a>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">Login</Link>
+                                </li>
                             </ul>
-                            <a href="booking.html" className="ml-3 book btn btn-secondary btn-style">Book Now</a>
+                            <Link className="ml-3 book btn btn-secondary btn-style" to="/rooms" >Book Now</Link>
                         </div>
                     </div>
                 </nav>

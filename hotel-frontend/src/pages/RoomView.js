@@ -60,40 +60,26 @@ const RoomView = () => {
 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav ml-auto">
-                                <li className="nav-item @@home__active">
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/">Home</Link>
                                 </li>
-                                <li className="nav-item @@about__active">
-                                    <a className="nav-link" href="about.html">About</a>
-                                </li>
-                                <li className="nav-item active">
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/services">Services</Link>
                                 </li>
-                                <li className="nav-item dropdown @@room__active">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Rooms <span className="fa fa-angle-down"></span>
-                                    </a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <Link className="dropdown-item" to="/rooms">Rooms</Link>
-                                        <a className="dropdown-item" href="room-single.html">Room Single</a>
-                                    </div>
+                                <li className="nav-item ">
+                                    <Link className="nav-link" to="/rooms">Rooms</Link>
                                 </li>
-                                <li className="nav-item dropdown @@blog__active">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Blog <span className="fa fa-angle-down"></span>
-                                    </a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a className="dropdown-item" href="blog.html">Blog</a>
-                                        <a className="dropdown-item" href="blog-single.html">Blog Single</a>
-                                    </div>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/myreservation">MyReservation</Link>
                                 </li>
-                                <li className="nav-item @@contact__active">
+                                <li className="nav-item">
                                     <a className="nav-link" href="contact.html">Contact</a>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">Login</Link>
+                                </li>
                             </ul>
-                            <a href="booking.html" className="ml-3 book btn btn-secondary btn-style">Book Now</a>
+                            <Link className="ml-3 book btn btn-secondary btn-style" to="/rooms">Book Now</Link>
                         </div>
                     </div>
                 </nav>
@@ -105,7 +91,7 @@ const RoomView = () => {
                     <div className="container py-lg-3">
 
                         <h2>Rooms</h2>
-                        <p><Link  to="/">Home</Link> &nbsp; / &nbsp; Room</p>
+                        <p><Link to="/">Home</Link> &nbsp; / &nbsp; Room</p>
 
                     </div>
                 </div>
@@ -125,12 +111,14 @@ const RoomView = () => {
                                         <p> Per night</p>
                                     </div>
                                     <div className="book-btn px-2">
-                                        <Link to={`/reservation/${room.roomId}`} className="btn btn-style btn-secondary mt-3">Book Now</Link>
+                                        <Link to={`/reservation/${room.roomId}`}
+                                              className="btn btn-style btn-secondary mt-3">Book Now</Link>
                                     </div>
                                 </div>
                                 <ul className="room-amenities">
                                     <li><a href="#url"><span className="fa fa-beer"></span> {room.surface} sqft</a></li>
-                                    <li><a href="#url"><span className="fa fa-users"></span> {room.maxOccupancy} Guests</a></li>
+                                    <li><a href="#url"><span className="fa fa-users"></span> {room.maxOccupancy} Guests</a>
+                                    </li>
                                     <li><a href="#url"><span className="fa fa-bed"></span> Double Bed</a></li>
                                 </ul>
                                 <Link to="/rooms" class="back"> <span className="fa fa-long-arrow-left"></span> Back
@@ -197,7 +185,7 @@ const RoomView = () => {
             <section className="w3l-roomsingleblock1 py-5">
                 <div className="container py-sm-4">
                     <div className="row">
-                    <div className="col-lg-7 roomsingle">
+                        <div className="col-lg-7 roomsingle">
                             <h3 className="title-small">Amenities provided by our hotel</h3>
                             <ul className="w3l-right-book mt-4">
                                 <li><a hef="#url"><span className="fa fa-check" aria-hidden="true"></span>Flat screen TV</a>
