@@ -129,19 +129,25 @@ const Services = () => {
                                 </div>
 
                                 {services.map((service) => (
-                                    <div className="col-lg-4 col-md-6 mt-4" key={service.service_id}>
-                                        <div className="features-with-17-right-tp_sur">
+                                    <div className="col-lg-4 col-md-6 mt-4" key={service.serviceId}>
+                                        <div
+                                            className="features-with-17-right-tp_sur d-flex flex-column h-100"
+                                            style={{
+                                                minHeight: '280px',
+                                                border: '1px solid #eee',
+                                                padding: '15px',
+                                                borderRadius: '8px'
+                                            }}
+                                        >
                                             <div className="features-with-17-left1">
-                                                {/*<span className="fa fa-star" aria-hidden="true"></span>*/}
                                                 <h4>{service.serviceName}</h4>
                                                 <br/>
                                             </div>
-                                            <div className="features-with-17-left2">
-                                                {/*<h5>{service.serviceName}</h5>*/}
+                                            <div className="features-with-17-left2 flex-grow-1 d-flex flex-column">
                                                 <h6>${service.price}</h6>
                                                 <p>{service.description}</p>
                                                 <button
-                                                    className="btn btn-secondary mt-2"
+                                                    className="btn btn-secondary mt-auto"
                                                     onClick={() => handleAddService(service.serviceId)}
                                                 >
                                                     Add to Reservation
@@ -150,76 +156,6 @@ const Services = () => {
                                         </div>
                                     </div>
                                 ))}
-                                {/*<div className="col-lg-4 col-md-6 mt-md-0 mt-4">*/}
-                                {/*    <div className="features-with-17-right-tp_sur">*/}
-                                {/*        <div className="features-with-17-left1">*/}
-                                {/*            <span className="fa fa-bed" aria-hidden="true"></span>*/}
-                                {/*        </div>*/}
-                                {/*        <div className="features-with-17-left2">*/}
-                                {/*            <h5>Fitness Zone</h5>*/}
-                                {/*            <h6><a href="#url">Swimming Pool</a></h6>*/}
-                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
-                                {/*                reader will be*/}
-                                {/*                distracted by the readable.</p>*/}
-                                {/*        </div>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                {/*<div className="col-lg-4 col-md-6 mt-lg-0 mt-sm-5 mt-4">*/}
-                                {/*    <div className="features-with-17-right-tp_sur">*/}
-                                {/*        <div className="features-with-17-left1">*/}
-                                {/*            <span className="fa fa-beer" aria-hidden="true"></span>*/}
-                                {/*        </div>*/}
-                                {/*        <div className="features-with-17-left2">*/}
-                                {/*            <h5>Food & Drinks</h5>*/}
-                                {/*            <h6><a href="#url">Restaurant and Bar</a></h6>*/}
-                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
-                                {/*                reader will be*/}
-                                {/*                distracted by the readable.</p>*/}
-                                {/*        </div>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                {/*<div className="col-lg-4 col-md-6 mt-sm-5 mt-4">*/}
-                                {/*    <div className="features-with-17-right-tp_sur">*/}
-                                {/*        <div className="features-with-17-left1">*/}
-                                {/*            <span className="fa fa-wifi" aria-hidden="true"></span>*/}
-                                {/*        </div>*/}
-                                {/*        <div className="features-with-17-left2">*/}
-                                {/*            <h5>Accommodation</h5>*/}
-                                {/*            <h6><a href="#url">High speed WiFi</a></h6>*/}
-                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
-                                {/*                reader will be*/}
-                                {/*                distracted by the readable.</p>*/}
-                                {/*        </div>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                {/*<div className="col-lg-4 col-md-6 mt-sm-5 mt-4">*/}
-                                {/*    <div className="features-with-17-right-tp_sur">*/}
-                                {/*        <div className="features-with-17-left1">*/}
-                                {/*            <span className="fa fa-bed" aria-hidden="true"></span>*/}
-                                {/*        </div>*/}
-                                {/*        <div className="features-with-17-left2">*/}
-                                {/*            <h5>Comfort & Relax</h5>*/}
-                                {/*            <h6><a href="#url">SPA & Wellness</a></h6>*/}
-                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
-                                {/*                reader will be*/}
-                                {/*                distracted by the readable.</p>*/}
-                                {/*        </div>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                {/*<div className="col-lg-4 col-md-6 mt-sm-5 mt-4">*/}
-                                {/*    <div className="features-with-17-right-tp_sur">*/}
-                                {/*        <div className="features-with-17-left1">*/}
-                                {/*            <span className="fa fa-headphones" aria-hidden="true"></span>*/}
-                                {/*        </div>*/}
-                                {/*        <div className="features-with-17-left2">*/}
-                                {/*            <h5>Safe & Secure </h5>*/}
-                                {/*            <h6><a href="#url">Staff 24/7</a></h6>*/}
-                                {/*            <p>Lorem ipsum dolor sit amet elit. Id, minima. It is a long fact that a*/}
-                                {/*                reader will be*/}
-                                {/*                distracted by the readable.</p>*/}
-                                {/*        </div>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
                             </div>
                         </div>
                     </div>
