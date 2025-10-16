@@ -18,7 +18,7 @@ const Services = () => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })  //use API Gateway
+        })
             .then((response) => {
                 console.log('Fetched services:', response.data);
                 setServices(response.data); // Set fetched data
@@ -50,11 +50,7 @@ const Services = () => {
             alert(`Service "${serviceName}" added successfully to reservation.`);
         } catch (error) {
             console.error('Error adding service to reservation:', error);
-            if (error.response?.data?.message) {
-                alert(`Error: ${error.response.data.message}`);
-            } else {
-                alert('Failed to add service to reservation.');
-            }
+            alert('Failed to add service to reservation.');
         }
     };
 
@@ -144,7 +140,7 @@ const Services = () => {
                                                 <br/>
                                             </div>
                                             <div className="features-with-17-left2 flex-grow-1 d-flex flex-column">
-                                                <h6>${service.price}</h6>
+                                                <h6>€{service.price}</h6>
                                                 <p>{service.description}</p>
                                                 <button
                                                     className="btn btn-secondary mt-auto"

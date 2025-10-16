@@ -5,7 +5,6 @@ import hotelLogo from "../assets/images/hotels.png";
 
 const MyReservation = () => {
     const [reservation, setReservation] = useState(null);
-    const [hotelUser, setHotelUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const token = localStorage.getItem("jwtToken");
@@ -13,16 +12,6 @@ const MyReservation = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch user info
-                const userRes = await axios.get(`http://localhost:9191/api/users/getUserFromToken`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setHotelUser(userRes.data);
-                console.log("Logged-in user data: ", userRes.data);
-                console.log("Token from localStorage:", token);
-
                 // Fetch reservation info
                 const res = await axios.get(`http://localhost:9191/api/reservations`, {
                     headers: {
@@ -45,8 +34,7 @@ const MyReservation = () => {
     if (loading) return <div>Loading your reservation...</div>;
     if (!reservation) return <div>No reservation found.</div>;
 
-    const { user, room, reservation: resData, hotelServices } = reservation;
-    console.log("user data", user);
+    const {room, reservation: resData, hotelServices } = reservation;
     console.log("room", room);
     console.log("hotelServices", hotelServices);
     console.log("reservation", resData);

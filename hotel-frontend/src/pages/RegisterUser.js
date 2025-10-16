@@ -9,7 +9,6 @@ const RegisterUser = () => {
         phoneNumber: "",
         userRole: "USER"
     });
-
     const [error, setError] = useState("");
     const navigate = useNavigate();
 

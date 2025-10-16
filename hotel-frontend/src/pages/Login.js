@@ -19,13 +19,6 @@ const Login = () => {
 
             const token = response.data.token;
             localStorage.setItem("jwtToken", token);
-
-            const loggedUser = await axios.get("http://localhost:9191/api/users/getUserFromToken", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
             navigate("/");
         } catch (err) {
             setError("Invalid email or password. Please try again.");

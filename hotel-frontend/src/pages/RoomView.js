@@ -107,7 +107,7 @@ const RoomView = () => {
                                 <h6> {room.roomType} Room nr.{room.roomId}</h6>
                                 <div className="border-line">
                                     <div className="bg">
-                                        <span className="price">{room.pricePerNight} $</span>
+                                        <span className="price">{room.pricePerNight} €</span>
                                         <p> Per night</p>
                                     </div>
                                     <div className="book-btn px-2">

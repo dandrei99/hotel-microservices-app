@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import App from "../App";
 import {Link, useParams} from "react-router-dom";
 import hotelLogo from "../assets/images/hotels.png";
 import axios from "axios";
@@ -110,9 +109,6 @@ const Reservation = () => {
                             <div className="booking-forms-16-info align-self">
                                 <h5>Your Reservation</h5>
                                 <h3 className="title-big">Select the Room, check for availability and book it.</h3>
-                                <p>Lorem ipsum dolor sit amet,Ea consequuntur illum facere aperiam sequi optio
-                                    consectetur
-                                    adipisicing elit Ea consequuntur illum.</p>
                             </div>
                             <div className="form-right-inf">
                                 <div className="booking-form-content">
