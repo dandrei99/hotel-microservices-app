@@ -1,10 +1,10 @@
 package hotel.reservation_service.service;
 
 import hotel.reservation_service.dto.RoomDto;
-import hotel.reservation_service.service.impl.ReservationServiceImpl;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,11 +18,14 @@ public class RoomClientService {
         this.webClientBuilder = webClientBuilder;
     }
 
+    @Value("${room.service.base-url}")
+    private String roomServiceBaseUrl;
+
     @CircuitBreaker(name = "roomService", fallbackMethod = "fallbackRoom")
     public RoomDto getRoom(Long roomId, String token) {
         WebClient securedWebClient = webClientBuilder.build();
         RoomDto roomDto =  securedWebClient.get()
-                .uri("http://localhost:9191/api/rooms/" + roomId)
+                .uri(roomServiceBaseUrl + roomId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(RoomDto.class)

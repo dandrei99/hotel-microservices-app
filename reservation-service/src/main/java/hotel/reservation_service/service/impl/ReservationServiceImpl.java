@@ -9,8 +9,10 @@ import hotel.reservation_service.service.RoomClientService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
@@ -30,6 +32,17 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final RoomClientService roomClientService;
 
+    @Value("${user.service.base-url}")
+    private String userServiceBaseUrl;
+
+    @Value("${room.service.base-url}")
+    private String roomServiceBaseUrl;
+
+    @Value("${services.service.base-url}")
+    private String servicesServiceBaseUrl;
+
+
+    @Transactional
     @Override
     public APIResponseDto saveReservation(String userEmail, Long roomId, String token, ReservationDatesRequestDto reservationDates) {
         log.info("Starting to create reservation for user: {} and roomId: {}", userEmail, roomId);
@@ -82,6 +95,7 @@ public class ReservationServiceImpl implements ReservationService {
         return apiResponseDto;
     }
 
+    @Transactional
     @Override
     public APIResponseDto addServiceToReservationByDate(String userEmail, Long serviceId, String token) {
         log.info("Adding serviceId: {} to reservation for user: {}", serviceId, userEmail);
@@ -137,6 +151,7 @@ public class ReservationServiceImpl implements ReservationService {
         return apiResponseDto;
     }
 
+    @Transactional
     @Override
     public APIResponseDto getReservation(String userEmail, String token) {
         log.info("Fetching reservation for user: {}", userEmail);
@@ -180,6 +195,7 @@ public class ReservationServiceImpl implements ReservationService {
         return apiResponseDto;
     }
 
+    @Transactional
     @Override
     public APIResponseDto removeServiceFromReservation(String userEmail, Long serviceId, String token) {
         log.info("Removing serviceId: {} from reservation for user: {}", serviceId, userEmail);
@@ -297,7 +313,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         WebClient securedWebClient = webClientBuilder.build();
         UserDto userDto = securedWebClient.get()
-                .uri("http://localhost:9191/api/users/getUserByEmail/" + userEmail)
+                .uri(userServiceBaseUrl + "getUserByEmail/" + userEmail)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(UserDto.class)
@@ -312,7 +328,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         WebClient securedWebClient = webClientBuilder.build();
         RoomDto roomDto = securedWebClient.get()
-                .uri("http://localhost:9191/api/rooms/" + roomId)
+                .uri(roomServiceBaseUrl + roomId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(RoomDto.class)
@@ -325,7 +341,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         WebClient securedWebClient = webClientBuilder.build();
         HotelServiceDto serviceDto = securedWebClient.get()
-                .uri("http://localhost:9191/api/services/" + serviceId)
+                .uri(servicesServiceBaseUrl + serviceId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
                 .retrieve()
                 .bodyToMono(HotelServiceDto.class)
