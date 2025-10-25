@@ -1,0 +1,27 @@
+# Dependencies & builds
+node_modules
+build
+dist
+.coverage
+coverage
+
+# Tooling caches
+.eslintcache
+.npm
+.pnpm-store
+.yarn
+.yarn-cache
+
+# VCS / IDE
+.git
+.gitignore
+.idea
+.vscode
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Env files (don’t bake into images)
+.env
+.env.*

@@ -14,7 +14,7 @@ const Services = () => {
 
         const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
 
-        axios.get('http://localhost:9191/api/services',{
+        axios.get('/api-gateway/api/services',{
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -34,7 +34,7 @@ const Services = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:9191/api/reservations/addHotelService?serviceId=${serviceId}`,
+                `/api-gateway/api/reservations/addHotelService?serviceId=${serviceId}`,
                 {},
                 {
                     headers: {

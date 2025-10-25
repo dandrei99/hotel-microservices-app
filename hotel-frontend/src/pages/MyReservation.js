@@ -13,7 +13,7 @@ const MyReservation = () => {
         const fetchData = async () => {
             try {
                 // Fetch reservation info
-                const res = await axios.get(`http://localhost:9191/api/reservations`, {
+                const res = await axios.get(`/api-gateway/api/reservations`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ const MyReservation = () => {
 
         try {
             const response = await axios.delete(
-                `http://localhost:9191/api/reservations/removeHotelService?serviceId=${serviceId}`,
+                `/api-gateway/api/reservations/removeHotelService?serviceId=${serviceId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -34,7 +34,7 @@ const Reservation = () => {
             const formattedCheckOut = formatDate(reservationDates.checkOut);
 
             const response = await axios.post(
-                `http://localhost:9191/api/reservations?roomId=${roomId}`
+                `/api-gateway/api/reservations?roomId=${roomId}`
                 ,
                 {
                     checkIn: formattedCheckIn,

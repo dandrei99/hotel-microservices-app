@@ -17,7 +17,7 @@ const Rooms = () => {
 
         const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
 
-        axios.get('http://localhost:9191/api/rooms/all', {
+        axios.get('/api-gateway/api/rooms/all', {
             headers: {
                 Authorization: `Bearer ${token}`  //Add Authorization header
             }

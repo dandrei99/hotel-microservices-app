@@ -23,7 +23,7 @@ const RegisterUser = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8080/api/users/create", formData);
+            await axios.post("/user-service/api/users/create", formData);
             navigate("/login");
         } catch (err) {
             setError("Registration failed. Please try again.");
