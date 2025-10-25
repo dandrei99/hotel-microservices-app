@@ -1,0 +1,33 @@
+# Build artifacts
+target
+*.jar
+*.war
+
+# VCS / IDE
+.git
+.gitignore
+.idea
+.vscode
+.classpath
+.project
+.settings/
+out/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+logs/
+*.tmp
+*.bak
+
+# Env/secrets (keep these out of images)
+.env
+*.env
+
+# Node leftovers (just in case)
+node_modules
+dist
+build
