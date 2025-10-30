@@ -2,6 +2,10 @@ package hotel.reservation_service.service.impl;
 
 import hotel.reservation_service.dto.*;
 import hotel.reservation_service.entity.Reservation;
+import hotel.reservation_service.exception.exceptions.NoReservationForUserException;
+import hotel.reservation_service.exception.exceptions.RoomNotAvailableException;
+import hotel.reservation_service.exception.exceptions.ServiceAlreadyAddedException;
+import hotel.reservation_service.exception.exceptions.UserAlreadyHasReservationException;
 import hotel.reservation_service.mapper.ReservationMapper;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.ReservationService;
@@ -48,7 +52,7 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Starting to create reservation for user: {} and roomId: {}", userEmail, roomId);
 
         if(!isRoomAvailable(roomId,reservationDates.getCheckIn(),reservationDates.getCheckOut())){
-            throw new RuntimeException("Room is not available in the selected time period");
+            throw new RoomNotAvailableException(roomId, reservationDates.getCheckIn(), reservationDates.getCheckOut());
         }
 
         UserDto userDto = getUserByEmailResponseApi(userEmail, token);
@@ -56,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
         boolean hasReservation =  reservationRepository.findByUserId(userDto.getUserId()).isPresent();
         if(hasReservation){
             log.info("User {} already has a reservation on room {}", userEmail, reservationRepository.findByUserId(userDto.getUserId()).get().getRoomId());
-            throw new RuntimeException("User already has a reservation");
+            throw new UserAlreadyHasReservationException(userEmail, roomId);
         }
         RoomDto roomDto = getRoomResponseApi(roomId, token);
         log.info("Fetched RoomDto: {}",    roomDto);
@@ -103,23 +107,24 @@ public class ReservationServiceImpl implements ReservationService {
         UserDto userDto = getUserByEmailResponseApi(userEmail, token);
         log.info("Fetched UserDto: {}", userDto);
 
-        //Check User has reservation
+        // Check user has reservation
         Reservation reservation = reservationRepository.findByUserId(userDto.getUserId())
                 .orElseThrow(() -> {
-                    log.info("No reservation found for user: {}", userEmail);
-                    return new RuntimeException("No reservation found for this user");
+                    log.error("No reservation found for user: {}", userEmail);
+                    throw new NoReservationForUserException(userEmail);
                 });
 
-        //CHECK SERVICE DOESN'T EXIST ALREADY IN RESERVATION
+        // CHECK SERVICE DOESN'T ALREADY EXIST IN RESERVATION
         List<Long> reservationServices = reservation.getServiceIds();
         if (reservationServices.contains(serviceId)) {
-            log.info("Service with ID: {} is already added to the reservation for user: {}", serviceId, userEmail);
-            throw new IllegalArgumentException("Service with ID " + serviceId + " is already added to the reservation.");
+            log.error("Service with ID: {} is already added to the reservation for user: {}", serviceId, userEmail);
+            throw new ServiceAlreadyAddedException(serviceId);
         }
-        //ADD SERVICEID TO RESERVATION
+
+        // ADD SERVICEID TO RESERVATION
         reservationServices.add(serviceId);
 
-        //POPULATE userHotelServices TO HAVE ALL DATA ABOUT EACH SERVICE
+        // POPULATE userHotelServices TO HAVE ALL DATA ABOUT EACH SERVICE
         List<HotelServiceDto> userHotelServices = new ArrayList<>();
 
         for (int i = 0; i < reservationServices.size(); i++) {
@@ -129,18 +134,18 @@ public class ReservationServiceImpl implements ReservationService {
             userHotelServices.add(serviceDto);
         }
 
-        //GET RoomDto, TO HAVE DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
+        // GET RoomDto, TO HAVE DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
         RoomDto roomDto = getRoomResponseApi(reservation.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
-        //UPDATE RESERVATION WITH NEW SERVICE AND WITH NEW TOTAL PRICE OF RESERVATION
+        // UPDATE RESERVATION WITH NEW SERVICE AND WITH NEW TOTAL PRICE OF RESERVATION
         reservation.setServiceIds(reservationServices);
         reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(), reservation.getCheckIn(), reservation.getCheckOut(), userHotelServices));
         Reservation updatedReservation = reservationRepository.save(reservation);
 
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
 
-        //create the API Response
+        // Create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
         apiResponseDto.setReservation(reservationDto);
         apiResponseDto.setUser(userDto);
@@ -162,14 +167,12 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findByUserId(userDto.getUserId())
                 .orElseThrow(() -> {
                     log.info("No reservation found for user: {}", userEmail);
-                    return new RuntimeException("No reservation found for this user");
+                    return new NoReservationForUserException(userEmail);
                 });
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(reservation);
         log.info("User with Id: {} has the following reservation: {}", userEmail, reservationDto);
 
-        //RoomDto
-//        RoomDto roomDto = getRoomResponseApi(reservationDto.getRoomId(), token);
-        //call using Resilience4j
+        // Call using Resilience4j
         RoomDto roomDto = roomClientService.getRoom(reservationDto.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
@@ -207,7 +210,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findByUserId(userDto.getUserId())
                 .orElseThrow(() -> {
                     log.info("No reservation found for user: {}", userEmail);
-                    return new RuntimeException("No reservation found for this user");
+                    return new NoReservationForUserException(userEmail);
                 });
 
         //CHECK SERVICE EXISTS IN RESERVATION
@@ -229,18 +232,18 @@ public class ReservationServiceImpl implements ReservationService {
             userHotelServices.add(serviceDto);
         }
 
-        //GET RoomDto, TO HAVE DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
+        // GET RoomDto, TO HAVE DATA ABOUT THE ROOM, NEEDED FOR PRICE CALCULATION
         RoomDto roomDto = getRoomResponseApi(reservation.getRoomId(), token);
         log.info("Fetched RoomDto: {}", roomDto);
 
-        //UPDATE RESERVATION WITH NEW SERVICE LIST AND WITH NEW TOTAL PRICE OF RESERVATION
+        // UPDATE RESERVATION WITH NEW SERVICE LIST AND WITH NEW TOTAL PRICE OF RESERVATION
         reservation.setServiceIds(reservationServices);
         reservation.setTotalPrice(calculateReservationPrice(roomDto.getPricePerNight(), reservation.getCheckIn(), reservation.getCheckOut(), userHotelServices));
         Reservation updatedReservation = reservationRepository.save(reservation);
 
         ReservationDto reservationDto = ReservationMapper.mapToReservationDto(updatedReservation);
 
-        //create the API Response
+        // Create the API Response
         APIResponseDto apiResponseDto = new APIResponseDto();
         apiResponseDto.setReservation(reservationDto);
         apiResponseDto.setUser(userDto);
@@ -293,20 +296,6 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-    private UserDto getUserResponseApi(Long userId, String token) {
-        log.info("Fetching UserDto for userId: {}", userId);
-
-        WebClient securedWebClient = webClientBuilder.build();
-        UserDto userDto = securedWebClient.get()
-                .uri("http://localhost:9191/api/users/" + userId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
-                .retrieve()
-                .bodyToMono(UserDto.class)
-                .block();
-
-        log.info("Fetched UserDto: {}", userDto);
-        return userDto;
-    }
 
     private UserDto getUserByEmailResponseApi(String userEmail, String token) {
         log.info("Fetching UserDto for userEmail: {}", userEmail);

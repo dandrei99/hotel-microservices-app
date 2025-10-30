@@ -15,11 +15,4 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     public List<Reservation> findByRoomId(Long roomId);
 
-    @Query("SELECT r FROM Reservation r WHERE r.userId = :userId AND r.checkIn = :checkIn AND r.checkOut = :checkOut")
-    public Optional<Reservation> findByUserIdAndCheckInAndCheckOut(
-            @Param("userId") Long userId,
-            @Param("checkIn") LocalDate checkIn,
-            @Param("checkOut") LocalDate checkOut
-    );
-
 }
