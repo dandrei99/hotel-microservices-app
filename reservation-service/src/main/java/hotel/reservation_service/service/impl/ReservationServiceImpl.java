@@ -2,17 +2,13 @@ package hotel.reservation_service.service.impl;
 
 import hotel.reservation_service.dto.*;
 import hotel.reservation_service.entity.Reservation;
-import hotel.reservation_service.exception.exceptions.NoReservationForUserException;
-import hotel.reservation_service.exception.exceptions.RoomNotAvailableException;
-import hotel.reservation_service.exception.exceptions.ServiceAlreadyAddedException;
-import hotel.reservation_service.exception.exceptions.UserAlreadyHasReservationException;
+import hotel.reservation_service.exception.exceptions.*;
 import hotel.reservation_service.mapper.ReservationMapper;
 import hotel.reservation_service.repository.ReservationRepository;
 import hotel.reservation_service.service.ReservationService;
 import hotel.reservation_service.service.RoomClientService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -26,9 +22,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
-
-    private static final Logger log = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
     private final ReservationRepository reservationRepository;
 
@@ -296,46 +291,62 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-
     private UserDto getUserByEmailResponseApi(String userEmail, String token) {
         log.info("Fetching UserDto for userEmail: {}", userEmail);
+        UserDto userDto = null;
+        try{
+            WebClient securedWebClient = webClientBuilder.build();
+            userDto = securedWebClient.get()
+                    .uri(userServiceBaseUrl + "getUserByEmail/" + userEmail)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
+                    .retrieve()
+                    .bodyToMono(UserDto.class)
+                    .block();
 
-        WebClient securedWebClient = webClientBuilder.build();
-        UserDto userDto = securedWebClient.get()
-                .uri(userServiceBaseUrl + "getUserByEmail/" + userEmail)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
-                .retrieve()
-                .bodyToMono(UserDto.class)
-                .block();
+            log.info("Fetched UserDto: {}", userDto);
 
-        log.info("Fetched UserDto: {}", userDto);
+        }catch (Exception e){
+            throw new ServiceUnavailableException("User-Service");
+        }
         return userDto;
     }
 
+
     private RoomDto getRoomResponseApi(Long roomId, String token) {
         log.info("Fetching RoomDto for roomId: {}", roomId);
+        RoomDto roomDto = null;
 
-        WebClient securedWebClient = webClientBuilder.build();
-        RoomDto roomDto = securedWebClient.get()
-                .uri(roomServiceBaseUrl + roomId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
-                .retrieve()
-                .bodyToMono(RoomDto.class)
-                .block();
-
+        try{
+            WebClient securedWebClient = webClientBuilder.build();
+            roomDto = securedWebClient.get()
+                    .uri(roomServiceBaseUrl + roomId)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
+                    .retrieve()
+                    .bodyToMono(RoomDto.class)
+                    .block();
+        }catch(Exception e){
+            throw new ServiceUnavailableException("Room-Service");
+        }
         return roomDto;
     }
 
     private HotelServiceDto getHotelServiceResponseApi(Long serviceId, String token) {
+        log.info("Fetching HotelServiceDto for serviceId: {}", serviceId);
+        HotelServiceDto serviceDto = null;
 
-        WebClient securedWebClient = webClientBuilder.build();
-        HotelServiceDto serviceDto = securedWebClient.get()
-                .uri(servicesServiceBaseUrl + serviceId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
-                .retrieve()
-                .bodyToMono(HotelServiceDto.class)
-                .block();
+        try{
+            WebClient securedWebClient = webClientBuilder.build();
+            serviceDto = securedWebClient.get()
+                    .uri(servicesServiceBaseUrl + serviceId)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Pass token
+                    .retrieve()
+                    .bodyToMono(HotelServiceDto.class)
+                    .block();
 
+            log.info("Fetched HotelServiceDto: {}", serviceDto);
+        }catch(Exception e){
+            throw new ServiceUnavailableException("Services-Service");
+        }
         return serviceDto;
     }
 }

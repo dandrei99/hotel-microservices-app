@@ -1,10 +1,7 @@
 package hotel.reservation_service.exception;
 
 
-import hotel.reservation_service.exception.exceptions.NoReservationForUserException;
-import hotel.reservation_service.exception.exceptions.RoomNotAvailableException;
-import hotel.reservation_service.exception.exceptions.ServiceAlreadyAddedException;
-import hotel.reservation_service.exception.exceptions.UserAlreadyHasReservationException;
+import hotel.reservation_service.exception.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,5 +79,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<ErrorResponse> serviceNotAvailable (ServiceUnavailableException ex, WebRequest request){
+
+        log.error("ServiceUnavailableException occurred for request {}: {}",  request.getDescription(false), ex.getMessage(), ex);
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .error("Service Unavailable")
+                .message(ex.getMessage())
+                .path(request.getDescription(false))
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error,HttpStatus.SERVICE_UNAVAILABLE);
     }
 }
