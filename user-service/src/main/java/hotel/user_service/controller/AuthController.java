@@ -2,6 +2,7 @@ package hotel.user_service.controller;
 
 import hotel.user_service.dto.AuthResponse;
 import hotel.user_service.dto.LoginRequest;
+import hotel.user_service.exception.exceptions.LoginFailedException;
 import hotel.user_service.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class AuthController {
             return ResponseEntity.ok(new AuthResponse(token));
 
         } catch (AuthenticationException e){
-            return  ResponseEntity.status(401).body("Invalid credentials");
+            throw new LoginFailedException();
         }
     }
 }
