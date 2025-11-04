@@ -49,8 +49,13 @@ const Services = () => {
             const serviceName = addedService?.serviceName || 'Unknown service';
             alert(`Service "${serviceName}" added successfully to reservation.`);
         } catch (error) {
-            console.error('Error adding service to reservation:', error);
-            alert('Failed to add service to reservation.');
+            if(error.response){
+                console.error("Backend error: ", error.response.data.message);
+                alert(error.response.data.message);
+            }else{
+                console.error("Network error: ", error.message)
+                alert("Failed to add service to reservation")
+            }
         }
     };
 
