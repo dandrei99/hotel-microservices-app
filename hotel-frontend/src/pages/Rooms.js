@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 
 import hotelLogo from "../assets/images/hotels.png";
@@ -12,10 +12,17 @@ import about2 from "../assets/images/about2.jpg";
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
+    const navigate = useNavigate(); // Initialize navigate
 
     useEffect(() => {
 
         const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+
+        // Redirect to login if token not found
+        if (!token) {
+            navigate('/login');
+            return;
+        }
 
         axios.get('/api-gateway/api/rooms/all', {
             headers: {
@@ -29,7 +36,7 @@ const Rooms = () => {
             .catch((error) => {
                 console.error('Error fetching rooms:', error);
             })
-    }, []);
+    }, [navigate]);
 
     //declared array of pictures to use them when iterating below, in the Rooms Section, one for each room
     const roomImages = [blog1, about3, blog3, blog2, about1, about2];

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import axios from "axios";
 
 import hotelLogo from '../assets/images/hotels.png';
@@ -8,11 +8,18 @@ import facilities from '../assets/images/facilities.jpg';
 
 const Services = () => {
     const [services, setServices] = useState([]); // State to hold services
+    const navigate = useNavigate(); // Initialize navigate
 
     // Fetch services from the API
     useEffect(() => {
 
         const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+
+        // Redirect to login if token not found
+        if (!token) {
+            navigate('/login');
+            return;
+        }
 
         axios.get('/api-gateway/api/services',{
             headers: {
@@ -26,7 +33,7 @@ const Services = () => {
             .catch((error) => {
                 console.error('Error fetching services:', error);
             });
-    }, []);
+    }, [navigate]);  // Include navigate dependency
 
 
     const handleAddService = async (serviceId) => {

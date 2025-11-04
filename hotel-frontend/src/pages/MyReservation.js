@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import hotelLogo from "../assets/images/hotels.png";
 
 const MyReservation = () => {
     const [reservation, setReservation] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // Initialize navigate
 
-    const token = localStorage.getItem("jwtToken");
+    const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
 
     useEffect(() => {
+
+        // Redirect to login if token not found
+        if (!token) {
+            navigate('/login');
+            return;
+        }
         const fetchData = async () => {
             try {
                 // Fetch reservation info
@@ -29,7 +36,7 @@ const MyReservation = () => {
         };
 
         fetchData();
-    }, [token]);
+    }, [navigate]);
 
     if (loading) return <div>Loading your reservation...</div>;
     if (!reservation) return <div>No reservation found.</div>;
