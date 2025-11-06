@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 import hotelLogo from "../assets/images/hotels.png";
+import {toast} from "react-toastify";
 
 const MyReservation = () => {
     const [reservation, setReservation] = useState(null);
@@ -60,11 +61,11 @@ const MyReservation = () => {
                 }
             );
 
-            alert(`Service removed successfully.`);
+            toast.info(`Service removed successfully.`);
             setReservation(response.data); // Update UI with new reservation state
         } catch (error) {
             console.error("Error removing service:", error);
-            alert("Failed to remove service. Try again.");
+            toast.error("Failed to remove service. Try again.");
         }
     };
 

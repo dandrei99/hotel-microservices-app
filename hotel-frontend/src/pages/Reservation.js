@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import hotelLogo from "../assets/images/hotels.png";
 import axios from "axios";
+import {toast} from "react-toastify";
 
 const Reservation = () => {
     const {roomId} = useParams(); // Get roomId from the URL
@@ -49,10 +50,10 @@ const Reservation = () => {
             );
 
             console.log('Reservation successful:', response.data);
-            alert('Reservation successful!');
+            toast.info('Reservation successfully created!');
         }catch(error) {
             console.error('Error creating reservation:', error);
-            alert('Error creating reservation. Please try again.');
+            toast.error('Error creating reservation. Please try again.');
         }
     };
 

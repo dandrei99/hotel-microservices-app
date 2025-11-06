@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
 
 const RegisterUser = () => {
     const [formData, setFormData] = useState({
@@ -24,9 +25,18 @@ const RegisterUser = () => {
         e.preventDefault();
         try {
             await axios.post("/user-service/api/users/create", formData);
+
+            // Show success toast message
+            toast.info("User created successfully!");
+
+            // Redirect to login after a short delay
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500); // give time for toast to appear
+
             navigate("/login");
         } catch (err) {
-            setError("Registration failed. Please try again.");
+            toast.error("Registration failed. Please try again.");
         }
     };
 

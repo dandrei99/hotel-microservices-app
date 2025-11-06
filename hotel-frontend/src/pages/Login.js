@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import '../assets/css/style-liberty.css';
+import {toast} from "react-toastify";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const Login = () => {
             localStorage.setItem("jwtToken", token);
             navigate("/");
         } catch (err) {
-            setError("Invalid email or password. Please try again.");
+            toast.error("Invalid email or password. Please try again.");
         }
     };
 

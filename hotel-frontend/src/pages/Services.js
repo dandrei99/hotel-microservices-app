@@ -4,6 +4,7 @@ import axios from "axios";
 
 import hotelLogo from '../assets/images/hotels.png';
 import facilities from '../assets/images/facilities.jpg';
+import {toast} from "react-toastify";
 
 
 const Services = () => {
@@ -54,14 +55,15 @@ const Services = () => {
             const addedService = response.data.hotelServices.at(-1); // get the last added service
             console.log('Last added service: ',addedService);
             const serviceName = addedService?.serviceName || 'Unknown service';
-            alert(`Service "${serviceName}" added successfully to reservation.`);
+
+            toast.info(`Service "${serviceName}" added successfully to reservation!`);
         } catch (error) {
             if(error.response){
                 console.error("Backend error: ", error.response.data.message);
-                alert(error.response.data.message);
+                toast.error(`${error.response.data.message}`);
             }else{
                 console.error("Network error: ", error.message)
-                alert("Failed to add service to reservation")
+                toast.error("⚠️ Failed to add service to reservation.");
             }
         }
     };
