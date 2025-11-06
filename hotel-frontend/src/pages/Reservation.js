@@ -52,8 +52,14 @@ const Reservation = () => {
             console.log('Reservation successful:', response.data);
             toast.info('Reservation successfully created!');
         }catch(error) {
-            console.error('Error creating reservation:', error);
-            toast.error('Error creating reservation. Please try again.');
+            if(error.response){
+                console.error("Backend error: ", error.response.data.message);
+                toast.error(`${error.response.data.message}`);
+            }else{
+                console.error('Error creating reservation:', error);
+                toast.error('Error creating reservation. Please try again.');
+            }
+
         }
     };
 
